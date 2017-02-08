@@ -1,7 +1,7 @@
 {
   "name": "chat-game",
   "version": "0.1.0",
-  "description": "",
+  "description": "Chat Game",
   "main": "index.js",
   "scripts": {
     "deploy": "gulp deploy",
