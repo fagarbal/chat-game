@@ -102802,8 +102802,6 @@ var ChatGame;
         function Boot() {
             _super.apply(this, arguments);
         }
-        Boot.prototype.preload = function () {
-        };
         Boot.prototype.create = function () {
             // Disable multitouch
             this.input.maxPointers = 1;
@@ -102813,7 +102811,7 @@ var ChatGame;
             }
             else {
             }
-            this.game.state.start("Preloader");
+            this.game.state.start("Main");
         };
         return Boot;
     }(Phaser.State));
@@ -102832,7 +102830,6 @@ var ChatGame;
         function Game() {
             _super.call(this, 800, 600, Phaser.AUTO);
             this.state.add("Boot", ChatGame.Boot);
-            this.state.add("Preloader", ChatGame.Preloader);
             this.state.add("Main", ChatGame.Main);
             this.state.start("Boot");
         }
@@ -102853,51 +102850,57 @@ var ChatGame;
         function Main() {
             _super.apply(this, arguments);
         }
+        Main.prototype.preload = function () {
+            this.game.load.image("sprite", "img/hero.png");
+        };
         Main.prototype.create = function () {
-            var lines = [
-                "PhassrOS/086DX Rel. 2.6.1",
-                "Copyright (c) Photon Research 1959-1983",
-                "All Rights Reserved.",
-                "",
-                "Welcome, ."
-            ];
-            var textStyle = {
-                fill: "#FFFFFF",
-                font: "px437_ati_8x16regular",
-                fontSize: "24px"
+            this.hero = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, "sprite");
+            this.hero.anchor.set(0.5, 0.5);
+            this.game.physics.arcade.enable(this.hero);
+            this.game.input.mouse.capture = true;
+            this.mousePosition = {
+                x: 0,
+                y: 0
             };
-            var y = 20;
-            for (var _i = 0, lines_1 = lines; _i < lines_1.length; _i++) {
-                var line = lines_1[_i];
-                this.game.add.text(20, y, line, textStyle);
-                y += 26;
+            this.game.input.activePointer.leftButton.onDown.add(this.onMouseDown.bind(this));
+        };
+        Main.prototype.getAnimationByRadius = function (radius) {
+            var degrees = radius * (180 / Math.PI);
+            var animation;
+            if (degrees < 135 && degrees > 45) {
+                animation = "down";
+            }
+            else if (degrees < -45 && degrees > -135) {
+                animation = "top";
+            }
+            else if (degrees <= 45 && degrees >= -45) {
+                animation = "right";
+            }
+            else {
+                animation = "left";
+            }
+            return animation;
+        };
+        Main.prototype.onMouseDown = function () {
+            if (Phaser.Math.distance(this.game.input.mousePointer.x, this.game.input.mousePointer.y, this.hero.position.x, this.hero.position.y) >= 5) {
+                this.mousePosition = {
+                    x: this.game.input.mousePointer.x,
+                    y: this.game.input.mousePointer.y
+                };
+                var radius = this.game.physics.arcade.moveToXY(this.hero, this.game.input.mousePointer.x, this.game.input.mousePointer.y, 200);
+                this.animation = this.getAnimationByRadius(radius);
+                console.log(this.animation);
+            }
+        };
+        Main.prototype.update = function () {
+            if (Phaser.Math.distance(this.mousePosition.x, this.mousePosition.y, this.hero.position.x, this.hero.position.y) < 5) {
+                this.hero.body.velocity.x = 0;
+                this.hero.body.velocity.y = 0;
             }
         };
         return Main;
     }(Phaser.State));
     ChatGame.Main = Main;
-})(ChatGame || (ChatGame = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var ChatGame;
-(function (ChatGame) {
-    var Preloader = (function (_super) {
-        __extends(Preloader, _super);
-        function Preloader() {
-            _super.apply(this, arguments);
-        }
-        Preloader.prototype.preload = function () {
-        };
-        Preloader.prototype.create = function () {
-            this.game.state.start("Main");
-        };
-        return Preloader;
-    }(Phaser.State));
-    ChatGame.Preloader = Preloader;
 })(ChatGame || (ChatGame = {}));
 
 window.onload = function () {

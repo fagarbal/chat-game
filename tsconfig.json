@@ -10,7 +10,6 @@
     "src/app.ts",
     "src/Game.ts",
     "src/Boot.ts",
-    "src/Preloader.ts",
     "src/Main.ts"
   ]
 }

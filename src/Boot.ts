@@ -1,11 +1,6 @@
 namespace ChatGame {
 
     export class Boot extends Phaser.State {
-
-        preload() {
-
-        }
-
         create() {
             // Disable multitouch
             this.input.maxPointers = 1;
@@ -19,7 +14,7 @@ namespace ChatGame {
                 // Mobile settings
             }
 
-            this.game.state.start("Preloader");
+            this.game.state.start("Main");
         }
     }
 }
