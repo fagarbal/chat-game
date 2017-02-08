@@ -51,7 +51,7 @@ gulp.task('watch', ['bundle'], () => {
 });
 
 gulp.task('deploy', ['compress'], () => {
-  git.push('heroku', 'master', (err) => { if (err) throw err; });
+  git.push('origin', 'heroku', (err) => { if (err) throw err; });
 });
 
 gulp.task('default', ['bundle']);
