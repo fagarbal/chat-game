@@ -1,0 +1,14 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='utf-8')
+    meta(name='viewport', content=`width=device-width,
+                                   initial-scale=1,
+                                   maximum-scale=1,
+                                   minimum-scale=1,
+                                   user-scalable=no`)
+    title 👾 Phaser + Typescript Demo
+    link(href='/css/main.css', rel='stylesheet')
+
+  body
+    script(src=`/js/${process.env.NODE_ENV === 'production' ? 'bundle.min.js' : 'bundle.js'}`)
