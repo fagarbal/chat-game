@@ -5,7 +5,7 @@ namespace ChatGame {
     animation: string;
 
     preload() {
-       this.game.load.image("sprite", "img/hero.png");
+      this.game.load.image("sprite", "img/hero.png");
     }
 
     create() {
