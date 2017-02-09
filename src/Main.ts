@@ -21,7 +21,7 @@ namespace ChatGame {
         y: 0
       };
 
-      this.game.input.activePointer.leftButton.onDown.add(this.onMouseDown.bind(this));
+      this.game.input.onDown.add(this.onMouseDown, this);
     }
 
     getAnimationByRadius(radius: number): string {

@@ -102803,14 +102803,7 @@ var ChatGame;
             _super.apply(this, arguments);
         }
         Boot.prototype.create = function () {
-            // Disable multitouch
-            this.input.maxPointers = 1;
-            // Pause if browser tab loses focus
             this.stage.disableVisibilityChange = true;
-            if (this.game.device.desktop) {
-            }
-            else {
-            }
             this.game.state.start("Main");
         };
         return Boot;
@@ -102862,7 +102855,7 @@ var ChatGame;
                 x: 0,
                 y: 0
             };
-            this.game.input.activePointer.leftButton.onDown.add(this.onMouseDown.bind(this));
+            this.game.input.onDown.add(this.onMouseDown, this);
         };
         Main.prototype.getAnimationByRadius = function (radius) {
             var degrees = radius * (180 / Math.PI);
