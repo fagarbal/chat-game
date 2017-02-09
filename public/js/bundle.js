@@ -102844,11 +102844,15 @@ var ChatGame;
             _super.apply(this, arguments);
         }
         Main.prototype.preload = function () {
-            this.game.load.image("sprite", "img/hero.png");
+            this.game.load.spritesheet("sprite", "img/animation.png", 95, 158, 48);
         };
         Main.prototype.create = function () {
             this.hero = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, "sprite");
             this.hero.anchor.set(0.5, 0.5);
+            this.hero.animations.add("bottom", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 12, true, true);
+            this.hero.animations.add("left", [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23], 12, true, true);
+            this.hero.animations.add("right", [24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35], 12, true, true);
+            this.hero.animations.add("up", [36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47], 12, true, true);
             this.game.physics.arcade.enable(this.hero);
             this.game.input.mouse.capture = true;
             this.mousePosition = {
@@ -102861,10 +102865,10 @@ var ChatGame;
             var degrees = radius * (180 / Math.PI);
             var animation;
             if (degrees < 135 && degrees > 45) {
-                animation = "down";
+                animation = "bottom";
             }
             else if (degrees < -45 && degrees > -135) {
-                animation = "top";
+                animation = "up";
             }
             else if (degrees <= 45 && degrees >= -45) {
                 animation = "right";
@@ -102875,20 +102879,21 @@ var ChatGame;
             return animation;
         };
         Main.prototype.onMouseDown = function () {
-            if (Phaser.Math.distance(this.game.input.mousePointer.x, this.game.input.mousePointer.y, this.hero.position.x, this.hero.position.y) >= 5) {
+            if (Phaser.Math.distance(this.game.input.activePointer.x, this.game.input.activePointer.y, this.hero.position.x, this.hero.position.y) >= 5) {
                 this.mousePosition = {
-                    x: this.game.input.mousePointer.x,
-                    y: this.game.input.mousePointer.y
+                    x: this.game.input.activePointer.x,
+                    y: this.game.input.activePointer.y
                 };
-                var radius = this.game.physics.arcade.moveToXY(this.hero, this.game.input.mousePointer.x, this.game.input.mousePointer.y, 200);
+                var radius = this.game.physics.arcade.moveToXY(this.hero, this.game.input.activePointer.x, this.game.input.activePointer.y, 200);
                 this.animation = this.getAnimationByRadius(radius);
-                console.log(this.animation);
+                this.hero.animations.play(this.animation);
             }
         };
         Main.prototype.update = function () {
             if (Phaser.Math.distance(this.mousePosition.x, this.mousePosition.y, this.hero.position.x, this.hero.position.y) < 5) {
                 this.hero.body.velocity.x = 0;
                 this.hero.body.velocity.y = 0;
+                this.hero.animations.stop();
             }
         };
         return Main;
