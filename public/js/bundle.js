@@ -102838,63 +102838,118 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var ChatGame;
 (function (ChatGame) {
-    var Main = (function (_super) {
-        __extends(Main, _super);
-        function Main() {
-            _super.apply(this, arguments);
-        }
-        Main.prototype.preload = function () {
-            this.game.load.spritesheet("sprite", "img/animation.png", 95, 158, 48);
-        };
-        Main.prototype.create = function () {
-            this.hero = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, "sprite");
-            this.hero.anchor.set(0.5, 0.5);
-            this.hero.animations.add("bottom", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 12, true, true);
-            this.hero.animations.add("left", [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23], 12, true, true);
-            this.hero.animations.add("right", [24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35], 12, true, true);
-            this.hero.animations.add("up", [36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47], 12, true, true);
-            this.game.physics.arcade.enable(this.hero);
-            this.game.input.mouse.capture = true;
-            this.mousePosition = {
+    var Hero = (function (_super) {
+        __extends(Hero, _super);
+        function Hero(game) {
+            _super.call(this, game, game.world.centerX, game.world.centerY, "sprite");
+            this.anchor.set(0.5, 0.5);
+            this.game.add.existing(this);
+            this.animations.add("left-bottom", [0, 1, 2, 3, 4, 5, 6, 7, 8], 9, true, true);
+            this.animations.add("bottom", [9, 10, 11, 12, 13, 14, 15, 16, 17], 9, true, true);
+            this.animations.add("right-bottom", [18, 19, 20, 21, 22, 23, 24, 25, 26], 9, true, true);
+            this.animations.add("left", [27, 28, 29, 30, 31, 32, 33, 34, 35], 9, true, true);
+            this.animations.add("left-top", [36, 37, 38, 39, 40, 41, 42, 43, 44], 9, true, true);
+            this.animations.add("right", [45, 46, 47, 48, 49, 50, 51, 52, 53], 9, true, true);
+            this.animations.add("right-top", [54, 55, 56, 57, 58, 59, 60, 61, 62], 9, true, true);
+            this.animations.add("top", [63, 64, 65, 66, 67, 68, 69, 70, 71], 9, true, true);
+            this.game.physics.arcade.enable(this);
+            this.body.collideWorldBounds = true;
+            this.body.enableBody = true;
+            this.body.onCollide = new Phaser.Signal();
+            this.body.onWorldBounds = new Phaser.Signal();
+            this.body.onCollide.add(this.onCollide, this);
+            this.body.onWorldBounds.add(this.onCollide, this);
+            this.game.input.onDown.add(this.onMouseDown, this);
+            this.moveToPosition = {
                 x: 0,
                 y: 0
             };
-            this.game.input.onDown.add(this.onMouseDown, this);
-        };
-        Main.prototype.getAnimationByRadius = function (radius) {
+        }
+        Hero.prototype.getAnimationByRadius = function (radius) {
             var degrees = radius * (180 / Math.PI);
             var animation;
-            if (degrees < 135 && degrees > 45) {
+            if (degrees <= 22.5 && degrees >= -22.5) {
+                animation = "right";
+            }
+            else if (degrees < -22.5 && degrees > -67.5) {
+                animation = "right-top";
+            }
+            else if (degrees <= -67 && degrees >= -115.5) {
+                animation = "top";
+            }
+            else if (degrees < -115.5 && degrees > -157.5) {
+                animation = "left-top";
+            }
+            else if (degrees > 22.5 && degrees < 67.5) {
+                animation = "right-bottom";
+            }
+            else if (degrees >= 67.5 && degrees <= 115.5) {
                 animation = "bottom";
             }
-            else if (degrees < -45 && degrees > -135) {
-                animation = "up";
-            }
-            else if (degrees <= 45 && degrees >= -45) {
-                animation = "right";
+            else if (degrees > 115.5 && degrees < 157.5) {
+                animation = "left-bottom";
             }
             else {
                 animation = "left";
             }
             return animation;
         };
-        Main.prototype.onMouseDown = function () {
-            if (Phaser.Math.distance(this.game.input.activePointer.x, this.game.input.activePointer.y, this.hero.position.x, this.hero.position.y) >= 5) {
-                this.mousePosition = {
+        Hero.prototype.onMouseDown = function () {
+            if (Phaser.Math.distance(this.game.input.activePointer.x, this.game.input.activePointer.y, this.position.x, this.position.y) >= 5) {
+                this.moveToPosition = {
                     x: this.game.input.activePointer.x,
                     y: this.game.input.activePointer.y
                 };
-                var radius = this.game.physics.arcade.moveToXY(this.hero, this.game.input.activePointer.x, this.game.input.activePointer.y, 200);
+                var radius = this.game.physics.arcade.moveToXY(this, this.game.input.activePointer.x, this.game.input.activePointer.y, 100);
                 this.animation = this.getAnimationByRadius(radius);
-                this.hero.animations.play(this.animation);
+                this.animations.play(this.animation);
             }
         };
-        Main.prototype.update = function () {
-            if (Phaser.Math.distance(this.mousePosition.x, this.mousePosition.y, this.hero.position.x, this.hero.position.y) < 5) {
-                this.hero.body.velocity.x = 0;
-                this.hero.body.velocity.y = 0;
-                this.hero.animations.stop();
+        Hero.prototype.onCollide = function () {
+            this.body.velocity.x = 0;
+            this.body.velocity.y = 0;
+            this.animations.stop();
+        };
+        Hero.prototype.update = function () {
+            if (Phaser.Math.distance(this.moveToPosition.x, this.moveToPosition.y, this.position.x, this.position.y) < 5) {
+                this.body.velocity.x = 0;
+                this.body.velocity.y = 0;
+                this.animations.stop();
             }
+        };
+        return Hero;
+    }(Phaser.Sprite));
+    ChatGame.Hero = Hero;
+})(ChatGame || (ChatGame = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var ChatGame;
+(function (ChatGame) {
+    var Main = (function (_super) {
+        __extends(Main, _super);
+        function Main() {
+            _super.apply(this, arguments);
+        }
+        Main.prototype.preload = function () {
+            this.game.load.spritesheet("sprite", "img/animation.png", 64, 96, 72);
+            this.game.load.image("platform", "img/hero.png");
+        };
+        Main.prototype.create = function () {
+            this.hero = new ChatGame.Hero(this.game);
+            this.platform = this.game.add.sprite(this.game.world.centerX + 200, this.game.world.centerY, "platform");
+            this.platform.anchor.set(0.5, 0.5);
+            this.game.physics.arcade.enable(this.platform);
+            this.platform.body.enableBody = true;
+            this.platform.body.immovable = true;
+            this.game.input.mouse.capture = true;
+        };
+        Main.prototype.update = function () {
+            this.hero.update();
+            this.game.physics.arcade.collide(this.hero, this.platform);
         };
         return Main;
     }(Phaser.State));
