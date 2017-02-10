@@ -102841,7 +102841,7 @@ var ChatGame;
     var Hero = (function (_super) {
         __extends(Hero, _super);
         function Hero(game) {
-            _super.call(this, game, game.world.centerX, game.world.centerY, "sprite");
+            _super.call(this, game, game.world.centerX - 100, game.world.centerY, "sprite");
             this.anchor.set(0.5, 0.5);
             this.game.add.existing(this);
             this.animations.add("left-bottom", [0, 1, 2, 3, 4, 5, 6, 7, 8], 9, true, true);
@@ -102940,7 +102940,7 @@ var ChatGame;
         };
         Main.prototype.create = function () {
             this.hero = new ChatGame.Hero(this.game);
-            this.platform = this.game.add.sprite(this.game.world.centerX + 200, this.game.world.centerY, "platform");
+            this.platform = this.game.add.sprite(this.game.world.centerX + 100, this.game.world.centerY, "platform");
             this.platform.anchor.set(0.5, 0.5);
             this.game.physics.arcade.enable(this.platform);
             this.platform.body.enableBody = true;

@@ -4,7 +4,7 @@ namespace ChatGame {
     moveToPosition: any;
 
     constructor(game: Phaser.Game) {
-      super(game, game.world.centerX, game.world.centerY, "sprite");
+      super(game, game.world.centerX - 100, game.world.centerY, "sprite");
       this.anchor.set(0.5, 0.5);
 
       this.game.add.existing(this);

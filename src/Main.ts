@@ -13,7 +13,7 @@ namespace ChatGame {
     create() {
       this.hero = new Hero(this.game);
 
-      this.platform = this.game.add.sprite(this.game.world.centerX + 200, this.game.world.centerY, "platform");
+      this.platform = this.game.add.sprite(this.game.world.centerX + 100, this.game.world.centerY, "platform");
       this.platform.anchor.set(0.5, 0.5);
 
       this.game.physics.arcade.enable(this.platform);
