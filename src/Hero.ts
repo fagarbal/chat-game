@@ -90,13 +90,14 @@ namespace ChatGame {
           y: this.game.input.activePointer.y
         };
 
+        this.sendMove();
+
         const radius = this.game.physics.arcade.moveToXY(this,
           this.game.input.activePointer.x, this.game.input.activePointer.y, 100);
 
         this.animation = this.getAnimationByRadius(radius);
         this.animations.play(this.animation);
 
-        this.sendMove();
       }
     }
 

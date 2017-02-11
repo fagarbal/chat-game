@@ -48,9 +48,6 @@ namespace ChatGame {
               x: players[playerId].x,
               y: players[playerId].y
             };
-
-            console.log(players[playerId]);
-
             const radius = this.game.physics.arcade.moveToXY(this.players[playerId],
               players[playerId].x, players[playerId].y, 100);
 

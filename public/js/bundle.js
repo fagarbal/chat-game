@@ -111116,10 +111116,10 @@ var ChatGame;
                     x: this.game.input.activePointer.x,
                     y: this.game.input.activePointer.y
                 };
+                this.sendMove();
                 var radius = this.game.physics.arcade.moveToXY(this, this.game.input.activePointer.x, this.game.input.activePointer.y, 100);
                 this.animation = this.getAnimationByRadius(radius);
                 this.animations.play(this.animation);
-                this.sendMove();
             }
         };
         Hero.prototype.onCollide = function () {
@@ -111183,7 +111183,6 @@ var ChatGame;
                             x: players[playerId].x,
                             y: players[playerId].y
                         };
-                        console.log(players[playerId]);
                         var radius = _this.game.physics.arcade.moveToXY(_this.players[playerId], players[playerId].x, players[playerId].y, 100);
                         _this.players[playerId].animation = _this.players[playerId].getAnimationByRadius(radius);
                         _this.players[playerId].animations.play(_this.players[playerId].animation);
