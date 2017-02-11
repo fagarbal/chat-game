@@ -10,7 +10,11 @@
     "src/app.ts",
     "src/Game.ts",
     "src/Boot.ts",
-    "src/Preloader.ts",
+    "src/Player.ts",
+    "src/Hero.ts",
     "src/Main.ts"
+  ],
+  "typeRoots": [
+    "node_modules/@types"
   ]
 }

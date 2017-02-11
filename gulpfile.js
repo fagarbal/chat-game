@@ -28,7 +28,12 @@ gulp.task('build', ['lint'], () => {
 gulp.task('bundle', ['build'], () => {
   return gulp.src([
     'lib/phaser.js',
-    '.build/**/!(app).js',
+    'lib/socket.io.js',
+    '.build/Player.js',
+    '.build/Hero.js',
+    '.build/Main.js',
+    '.build/Boot.js',
+    '.build/Game.js',
     '.build/app.js'
   ])
     .pipe(concat('bundle.js'))
@@ -51,7 +56,7 @@ gulp.task('watch', ['bundle'], () => {
 });
 
 gulp.task('deploy', ['compress'], () => {
-  git.push('heroku', 'master', (err) => { if (err) throw err; });
+  git.push('origin', 'heroku', (err) => { if (err) throw err; });
 });
 
 gulp.task('default', ['bundle']);

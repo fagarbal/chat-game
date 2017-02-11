@@ -1,15 +1,12 @@
 namespace ChatGame {
+  export class Game extends Phaser.Game {
+      constructor(socket: SocketIOClient.Socket) {
+        super(800, 600, Phaser.AUTO);
 
-    export class Game extends Phaser.Game {
+        this.state.add("Boot", ChatGame.Boot);
+        this.state.add("Main", ChatGame.Main.bind(this, socket));
 
-        constructor() {
-            super(800, 600, Phaser.AUTO);
-
-            this.state.add("Boot", ChatGame.Boot);
-            this.state.add("Preloader", ChatGame.Preloader);
-            this.state.add("Main", ChatGame.Main);
-
-            this.state.start("Boot");
-        }
-    }
+        this.state.start("Boot");
+      }
+  }
 }

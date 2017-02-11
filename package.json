@@ -1,7 +1,7 @@
 {
   "name": "chat-game",
   "version": "0.1.0",
-  "description": "",
+  "description": "Chat Game",
   "main": "index.js",
   "scripts": {
     "deploy": "gulp deploy",
@@ -13,7 +13,10 @@
   "author": " <>",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.14.0"
+    "@types/socket.io-client": "^1.4.29",
+    "express": "^4.14.0",
+    "pug": "^2.0.0-beta9",
+    "socket.io": "^1.7.2"
   },
   "devDependencies": {
     "eslint": "^3.3.1",

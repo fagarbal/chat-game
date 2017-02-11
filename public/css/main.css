@@ -7,13 +7,10 @@
 }
 
 body {
-  background: wheat;
   font-family: 'px437_ati_8x16regular';
 }
 
 canvas {
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, .5);
   left: 50%;
   position: absolute;
   top: 50%;
