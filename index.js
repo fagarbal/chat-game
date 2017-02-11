@@ -33,7 +33,7 @@ io.on('connection', (socket) => {
   socket.on('move', (data) => {
   	players[data.id] = data;
 
-  	io.sockets.emit('movePlayer', players[data.id]);
+  	socket.broadcast.emit('movePlayer', players[data.id]);
   });
 
   socket.on('disconnect', (data) => {

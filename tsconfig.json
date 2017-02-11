@@ -10,8 +10,8 @@
     "src/app.ts",
     "src/Game.ts",
     "src/Boot.ts",
-    "src/Hero.ts",
     "src/Player.ts",
+    "src/Hero.ts",
     "src/Main.ts"
   ],
   "typeRoots": [

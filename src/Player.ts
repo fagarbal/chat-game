@@ -3,7 +3,7 @@ namespace ChatGame {
     animation: string;
     moveToPosition: any;
 
-    constructor(game: Phaser.Game, posX: number, posY: number) {
+    constructor(game: Phaser.Game, posX: number, posY: number, color?: number) {
       super(game, posX, posY, "sprite");
 
       this.anchor.set(0.5, 0.5);
@@ -28,6 +28,16 @@ namespace ChatGame {
       this.body.onWorldBounds = new Phaser.Signal();
       this.body.onCollide.add(this.onCollide, this);
       this.body.onWorldBounds.add(this.onCollide, this);
+
+      if (!color) {
+        const colorR = Math.floor((Math.random() * 250) + 150);
+        const colorG = Math.floor((Math.random() * 250) + 150);
+        const colorB = Math.floor((Math.random() * 250) + 150);
+
+        color = colorR * colorG * colorB;
+      }
+
+      this.tint = color;
 
       this.moveToPosition = {
         x: 0,

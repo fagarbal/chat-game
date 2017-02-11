@@ -12,29 +12,23 @@ namespace ChatGame {
     }
 
     preload() {
-      this.game.load.spritesheet("sprite", "img/animation.png", 64, 96, 72);
-      this.game.load.image("platform", "img/hero.png");
+      this.game.load.spritesheet("sprite", "img/player.png", 64, 96, 72);
     }
 
     create() {
       this.hero = new Hero(this.game, this.socket);
 
-      this.platform = this.game.add.sprite(this.game.world.centerX + 100, this.game.world.centerY, "platform");
-      this.platform.anchor.set(0.5, 0.5);
-
-      this.game.physics.arcade.enable(this.platform);
-
-      this.platform.body.enableBody = true;
-      this.platform.body.immovable = true;
-
       this.game.input.mouse.capture = true;
       this.players = {};
 
+      this.setEvents();
+    }
+
+    setEvents() {
       this.socket.on("createPlayers", (players: any) => {
         for (const playerId in players) {
           if (!this.players[playerId] && this.socket.id !== playerId) {
-            this.players[playerId] = new Player(this.game, players[playerId].x , players[playerId].y);
-            this.players[playerId].tint = players[playerId].color;
+            this.players[playerId] = new Player(this.game, players[playerId].x, players[playerId].y, players[playerId].color);
           }
         }
       });
@@ -62,7 +56,9 @@ namespace ChatGame {
     update() {
       this.hero.update();
 
-      this.game.physics.arcade.collide(this.hero, this.platform);
+      for (let playerId in this.players) {
+        this.players[playerId].update();
+      }
     }
   }
 }

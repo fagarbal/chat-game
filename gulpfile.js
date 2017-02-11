@@ -29,7 +29,11 @@ gulp.task('bundle', ['build'], () => {
   return gulp.src([
     'lib/phaser.js',
     'lib/socket.io.js',
-    '.build/**/!(app).js',
+    '.build/Player.js',
+    '.build/Hero.js',
+    '.build/Main.js',
+    '.build/Boot.js',
+    '.build/Game.js',
     '.build/app.js'
   ])
     .pipe(concat('bundle.js'))
