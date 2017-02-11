@@ -2,9 +2,13 @@ namespace ChatGame {
   export class Hero extends Phaser.Sprite {
     animation: string;
     moveToPosition: any;
+    socket: SocketIOClient.Socket;
+    idConnection: string;
 
-    constructor(game: Phaser.Game) {
+    constructor(game: Phaser.Game, socket: SocketIOClient.Socket) {
       super(game, game.world.centerX - 100, game.world.centerY, "sprite");
+      this.socket = socket;
+
       this.anchor.set(0.5, 0.5);
 
       this.game.add.existing(this);
@@ -34,6 +38,23 @@ namespace ChatGame {
         x: 0,
         y: 0
       };
+
+      this.setConnection();
+    }
+
+    setConnection() {
+      this.socket.on("connected", (data: any) => {
+        this.idConnection = data.id;
+        this.sendMove();
+      });
+    }
+
+    sendMove() {
+      this.socket.emit("move", {
+        id: this.idConnection,
+        x: this.body.position.x,
+        y: this.body.position.y
+      });
     }
 
     getAnimationByRadius(radius: number): string {
@@ -75,6 +96,8 @@ namespace ChatGame {
 
         this.animation = this.getAnimationByRadius(radius);
         this.animations.play(this.animation);
+
+        this.sendMove();
       }
     }
 

@@ -12,5 +12,8 @@
     "src/Boot.ts",
     "src/Hero.ts",
     "src/Main.ts"
+  ],
+  "typeRoots": [
+    "node_modules/@types"
   ]
 }

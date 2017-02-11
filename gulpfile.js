@@ -28,6 +28,7 @@ gulp.task('build', ['lint'], () => {
 gulp.task('bundle', ['build'], () => {
   return gulp.src([
     'lib/phaser.js',
+    'lib/socket.io.js',
     '.build/**/!(app).js',
     '.build/app.js'
   ])
