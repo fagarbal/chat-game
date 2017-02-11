@@ -31,7 +31,7 @@ socketIO.on('connection', (socket) => {
   		y: data.y
   	};
 
-  	socket.emit('movePlayers', players);
+  	socketIO.sockets.emit('movePlayers', players);
 
     console.log(players);
   });

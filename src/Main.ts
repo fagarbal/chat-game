@@ -37,6 +37,18 @@ namespace ChatGame {
           }
         }
       });
+
+      this.socket.on("movePlayers", (players: any) => {
+        for (const playerId in players) {
+          if (this.players[playerId]) {
+            const radius = this.game.physics.arcade.moveToXY(this.players[playerId],
+              players[playerId].x, players[playerId].y, 100);
+
+            this.players[playerId].animation = this.players[playerId].getAnimationByRadius(radius);
+            this.players[playerId].animations.play(this.players[playerId].animation);
+          }
+        }
+      });
     }
 
     update() {

@@ -111175,6 +111175,15 @@ var ChatGame;
                     }
                 }
             });
+            this.socket.on("movePlayers", function (players) {
+                for (var playerId in players) {
+                    if (_this.players[playerId]) {
+                        var radius = _this.game.physics.arcade.moveToXY(_this.players[playerId], players[playerId].x, players[playerId].y, 100);
+                        _this.players[playerId].animation = _this.players[playerId].getAnimationByRadius(radius);
+                        _this.players[playerId].animations.play(_this.players[playerId].animation);
+                    }
+                }
+            });
         };
         Main.prototype.update = function () {
             this.hero.update();
