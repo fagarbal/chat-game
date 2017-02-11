@@ -111066,20 +111066,27 @@ var ChatGame;
                 x: 0,
                 y: 0
             };
+            var colorR = Math.floor((Math.random() * 250) + 150);
+            var colorG = Math.floor((Math.random() * 250) + 150);
+            var colorB = Math.floor((Math.random() * 250) + 150);
+            this.heroColor = colorR * colorG * colorB;
+            this.tint = this.heroColor;
             this.setConnection();
         }
         Hero.prototype.setConnection = function () {
             this.socket.emit("newPlayer", {
                 id: this.socket.id,
                 x: this.body.position.x,
-                y: this.body.position.y
+                y: this.body.position.y,
+                color: this.heroColor
             });
         };
         Hero.prototype.sendMove = function () {
             this.socket.emit("move", {
                 id: this.socket.id,
                 x: this.moveToPosition.x,
-                y: this.moveToPosition.y
+                y: this.moveToPosition.y,
+                color: this.heroColor
             });
         };
         Hero.prototype.getAnimationByRadius = function (radius) {
@@ -111172,6 +111179,7 @@ var ChatGame;
                 for (var playerId in players) {
                     if (!_this.players[playerId] && _this.socket.id !== playerId) {
                         _this.players[playerId] = new ChatGame.Player(_this.game, players[playerId].x, players[playerId].y);
+                        _this.players[playerId].tint = players[playerId].color;
                     }
                 }
             });

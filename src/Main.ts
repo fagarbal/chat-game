@@ -34,6 +34,7 @@ namespace ChatGame {
         for (const playerId in players) {
           if (!this.players[playerId] && this.socket.id !== playerId) {
             this.players[playerId] = new Player(this.game, players[playerId].x , players[playerId].y);
+            this.players[playerId].tint = players[playerId].color;
           }
         }
       });

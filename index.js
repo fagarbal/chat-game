@@ -25,20 +25,13 @@ io.on('connection', (socket) => {
 	socket.emit('connected', user);
 
 	socket.on('newPlayer', (data) => {
-		players[data.id] = {
-  		x: data.x,
-  		y: data.y
-  	};
+		players[data.id] = data;
 
   	io.sockets.emit('createPlayers', players);
 	});
 
   socket.on('move', (data) => {
-  	players[data.id] = {
-  		id: data.id,
-  		x: data.x,
-  		y: data.y
-  	};
+  	players[data.id] = data;
 
   	io.sockets.emit('movePlayer', players[data.id]);
   });

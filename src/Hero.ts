@@ -4,6 +4,7 @@ namespace ChatGame {
     moveToPosition: any;
     socket: SocketIOClient.Socket;
     idConnection: string;
+    heroColor: number;
 
     constructor(game: Phaser.Game, socket: SocketIOClient.Socket) {
       super(game, game.world.centerX - 100, game.world.centerY, "sprite");
@@ -39,6 +40,14 @@ namespace ChatGame {
         y: 0
       };
 
+      const colorR = Math.floor((Math.random() * 250) + 150);
+      const colorG = Math.floor((Math.random() * 250) + 150);
+      const colorB = Math.floor((Math.random() * 250) + 150);
+
+      this.heroColor = colorR * colorG * colorB;
+
+      this.tint = this.heroColor;
+
       this.setConnection();
     }
 
@@ -46,7 +55,8 @@ namespace ChatGame {
       this.socket.emit("newPlayer", {
         id: this.socket.id,
         x: this.body.position.x,
-        y: this.body.position.y
+        y: this.body.position.y,
+        color: this.heroColor
       });
     }
 
@@ -54,7 +64,8 @@ namespace ChatGame {
       this.socket.emit("move", {
         id: this.socket.id,
         x: this.moveToPosition.x,
-        y: this.moveToPosition.y
+        y: this.moveToPosition.y,
+        color: this.heroColor
       });
     }
 
