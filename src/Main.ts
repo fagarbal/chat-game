@@ -30,17 +30,27 @@ namespace ChatGame {
       this.game.input.mouse.capture = true;
       this.players = {};
 
-      this.socket.on("createPlayers", (players: any) => {
+      this.socket.on("createPlayers", (data: any) => {
+        const players = data.players;
+        this.hero.idConnection = data.id;
+
         for (const playerId in players) {
-          if (!this.players[playerId]) {
-            this.players[playerId] = new Hero(this.game, this.socket);
+          if (!this.players[playerId] && (playerId !== this.hero.idConnection)) {
+            this.players[playerId] = new Player(this.game, players[playerId].x , players[playerId].y);
           }
         }
       });
 
       this.socket.on("movePlayers", (players: any) => {
         for (const playerId in players) {
-          if (this.players[playerId]) {
+          if (this.players[playerId] && (playerId !== this.hero.idConnection)) {
+            this.players[playerId].moveToPosition = {
+              x: players[playerId].x,
+              y: players[playerId].y
+            };
+
+            console.log(players[playerId]);
+
             const radius = this.game.physics.arcade.moveToXY(this.players[playerId],
               players[playerId].x, players[playerId].y, 100);
 
@@ -53,11 +63,6 @@ namespace ChatGame {
 
     update() {
       this.hero.update();
-
-      for (const playerId in this.players) {
-        this.players[playerId].update();
-        this.game.physics.arcade.collide(this.players[playerId], this.platform);
-      }
 
       this.game.physics.arcade.collide(this.hero, this.platform);
     }

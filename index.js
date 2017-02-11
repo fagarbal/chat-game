@@ -22,11 +22,12 @@ socketIO.on('connection', (socket) => {
 	var user = {
 	  id: socket.id,
 	};
-  socketIO.sockets.emit('createPlayers', players);
+  socketIO.sockets.emit('createPlayers',{ players, id: user.id });
   socket.emit('connected', user);
 
   socket.on('move', (data) => {
-  	players[socket.id] = {
+  	players[data.id] = {
+  		id: data.id,
   		x: data.x,
   		y: data.y
   	};
@@ -41,3 +42,4 @@ socketIO.on('connection', (socket) => {
     socket.disconnect();
   });
 });
+

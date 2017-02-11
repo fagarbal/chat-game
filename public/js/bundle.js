@@ -111072,7 +111072,6 @@ var ChatGame;
             var _this = this;
             this.socket.on("connected", function (data) {
                 _this.idConnection = data.id;
-                _this.sendMove();
             });
         };
         Hero.prototype.sendMove = function () {
@@ -111168,16 +111167,23 @@ var ChatGame;
             this.platform.body.immovable = true;
             this.game.input.mouse.capture = true;
             this.players = {};
-            this.socket.on("createPlayers", function (players) {
+            this.socket.on("createPlayers", function (data) {
+                var players = data.players;
+                _this.hero.idConnection = data.id;
                 for (var playerId in players) {
-                    if (!_this.players[playerId]) {
-                        _this.players[playerId] = new ChatGame.Hero(_this.game, _this.socket);
+                    if (!_this.players[playerId] && (playerId !== _this.hero.idConnection)) {
+                        _this.players[playerId] = new ChatGame.Player(_this.game, players[playerId].x, players[playerId].y);
                     }
                 }
             });
             this.socket.on("movePlayers", function (players) {
                 for (var playerId in players) {
-                    if (_this.players[playerId]) {
+                    if (_this.players[playerId] && (playerId !== _this.hero.idConnection)) {
+                        _this.players[playerId].moveToPosition = {
+                            x: players[playerId].x,
+                            y: players[playerId].y
+                        };
+                        console.log(players[playerId]);
                         var radius = _this.game.physics.arcade.moveToXY(_this.players[playerId], players[playerId].x, players[playerId].y, 100);
                         _this.players[playerId].animation = _this.players[playerId].getAnimationByRadius(radius);
                         _this.players[playerId].animations.play(_this.players[playerId].animation);
@@ -111187,15 +111193,90 @@ var ChatGame;
         };
         Main.prototype.update = function () {
             this.hero.update();
-            for (var playerId in this.players) {
-                this.players[playerId].update();
-                this.game.physics.arcade.collide(this.players[playerId], this.platform);
-            }
             this.game.physics.arcade.collide(this.hero, this.platform);
         };
         return Main;
     }(Phaser.State));
     ChatGame.Main = Main;
+})(ChatGame || (ChatGame = {}));
+
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var ChatGame;
+(function (ChatGame) {
+    var Player = (function (_super) {
+        __extends(Player, _super);
+        function Player(game, posX, posY) {
+            _super.call(this, game, posX, posY, "sprite");
+            this.anchor.set(0.5, 0.5);
+            this.game.add.existing(this);
+            this.animations.add("left-bottom", [0, 1, 2, 3, 4, 5, 6, 7, 8], 9, true, true);
+            this.animations.add("bottom", [9, 10, 11, 12, 13, 14, 15, 16, 17], 9, true, true);
+            this.animations.add("right-bottom", [18, 19, 20, 21, 22, 23, 24, 25, 26], 9, true, true);
+            this.animations.add("left", [27, 28, 29, 30, 31, 32, 33, 34, 35], 9, true, true);
+            this.animations.add("left-top", [36, 37, 38, 39, 40, 41, 42, 43, 44], 9, true, true);
+            this.animations.add("right", [45, 46, 47, 48, 49, 50, 51, 52, 53], 9, true, true);
+            this.animations.add("right-top", [54, 55, 56, 57, 58, 59, 60, 61, 62], 9, true, true);
+            this.animations.add("top", [63, 64, 65, 66, 67, 68, 69, 70, 71], 9, true, true);
+            this.game.physics.arcade.enable(this);
+            this.body.collideWorldBounds = true;
+            this.body.enableBody = true;
+            this.body.onCollide = new Phaser.Signal();
+            this.body.onWorldBounds = new Phaser.Signal();
+            this.body.onCollide.add(this.onCollide, this);
+            this.body.onWorldBounds.add(this.onCollide, this);
+            this.moveToPosition = {
+                x: 0,
+                y: 0
+            };
+        }
+        Player.prototype.getAnimationByRadius = function (radius) {
+            var degrees = radius * (180 / Math.PI);
+            var animation;
+            if (degrees <= 22.5 && degrees >= -22.5) {
+                animation = "right";
+            }
+            else if (degrees < -22.5 && degrees > -67.5) {
+                animation = "right-top";
+            }
+            else if (degrees <= -67 && degrees >= -115.5) {
+                animation = "top";
+            }
+            else if (degrees < -115.5 && degrees > -157.5) {
+                animation = "left-top";
+            }
+            else if (degrees > 22.5 && degrees < 67.5) {
+                animation = "right-bottom";
+            }
+            else if (degrees >= 67.5 && degrees <= 115.5) {
+                animation = "bottom";
+            }
+            else if (degrees > 115.5 && degrees < 157.5) {
+                animation = "left-bottom";
+            }
+            else {
+                animation = "left";
+            }
+            return animation;
+        };
+        Player.prototype.onCollide = function () {
+            this.body.velocity.x = 0;
+            this.body.velocity.y = 0;
+            this.animations.stop();
+        };
+        Player.prototype.update = function () {
+            if (Phaser.Math.distance(this.moveToPosition.x, this.moveToPosition.y, this.position.x, this.position.y) < 5) {
+                this.body.velocity.x = 0;
+                this.body.velocity.y = 0;
+                this.animations.stop();
+            }
+        };
+        return Player;
+    }(Phaser.Sprite));
+    ChatGame.Player = Player;
 })(ChatGame || (ChatGame = {}));
 
 /// <reference path="../node_modules/@types/socket.io-client/index.d.ts" /> 

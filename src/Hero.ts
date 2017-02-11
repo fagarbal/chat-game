@@ -45,7 +45,6 @@ namespace ChatGame {
     setConnection() {
       this.socket.on("connected", (data: any) => {
         this.idConnection = data.id;
-        this.sendMove();
       });
     }
 
