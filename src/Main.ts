@@ -35,7 +35,7 @@ namespace ChatGame {
         this.hero.idConnection = data.id;
 
         for (const playerId in players) {
-          if (!this.players[playerId] && (playerId !== this.hero.idConnection)) {
+          if (!this.players[playerId] && this.hero.idConnection && (playerId !== this.hero.idConnection)) {
             this.players[playerId] = new Player(this.game, players[playerId].x , players[playerId].y);
           }
         }
@@ -43,7 +43,7 @@ namespace ChatGame {
 
       this.socket.on("movePlayers", (players: any) => {
         for (const playerId in players) {
-          if (this.players[playerId] && (playerId !== this.hero.idConnection)) {
+          if (this.players[playerId] && this.hero.idConnection && (playerId !== this.hero.idConnection)) {
             this.players[playerId].moveToPosition = {
               x: players[playerId].x,
               y: players[playerId].y

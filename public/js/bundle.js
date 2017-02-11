@@ -111072,6 +111072,7 @@ var ChatGame;
             var _this = this;
             this.socket.on("connected", function (data) {
                 _this.idConnection = data.id;
+                console.log(data.id);
             });
         };
         Hero.prototype.sendMove = function () {
@@ -111171,14 +111172,14 @@ var ChatGame;
                 var players = data.players;
                 _this.hero.idConnection = data.id;
                 for (var playerId in players) {
-                    if (!_this.players[playerId] && (playerId !== _this.hero.idConnection)) {
+                    if (!_this.players[playerId] && _this.hero.idConnection && (playerId !== _this.hero.idConnection)) {
                         _this.players[playerId] = new ChatGame.Player(_this.game, players[playerId].x, players[playerId].y);
                     }
                 }
             });
             this.socket.on("movePlayers", function (players) {
                 for (var playerId in players) {
-                    if (_this.players[playerId] && (playerId !== _this.hero.idConnection)) {
+                    if (_this.players[playerId] && _this.hero.idConnection && (playerId !== _this.hero.idConnection)) {
                         _this.players[playerId].moveToPosition = {
                             x: players[playerId].x,
                             y: players[playerId].y

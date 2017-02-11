@@ -22,19 +22,17 @@ socketIO.on('connection', (socket) => {
 	var user = {
 	  id: socket.id,
 	};
-  socketIO.sockets.emit('createPlayers',{ players, id: user.id });
-  socket.emit('connected', user);
+
+  setInterval(() => socketIO.sockets.emit('createPlayers',{ players, id: user.id }), 3000);
+  setInterval(() => socket.emit('connected', user), 3000);
 
   socket.on('move', (data) => {
-  	players[data.id] = {
-  		id: data.id,
+  	players[socket.id] = {
   		x: data.x,
   		y: data.y
   	};
 
   	socketIO.sockets.emit('movePlayers', players);
-
-    console.log(players);
   });
 
   socket.on('disconnect', (data) => {
