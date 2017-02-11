@@ -111069,17 +111069,17 @@ var ChatGame;
             this.setConnection();
         }
         Hero.prototype.setConnection = function () {
-            var _this = this;
-            this.socket.on("connected", function (data) {
-                _this.idConnection = data.id;
-                console.log(data.id);
+            this.socket.emit("newPlayer", {
+                id: this.socket.id,
+                x: this.body.position.x,
+                y: this.body.position.y
             });
         };
         Hero.prototype.sendMove = function () {
             this.socket.emit("move", {
-                id: this.idConnection,
-                x: this.body.position.x,
-                y: this.body.position.y
+                id: this.socket.id,
+                x: this.moveToPosition.x,
+                y: this.moveToPosition.y
             });
         };
         Hero.prototype.getAnimationByRadius = function (radius) {
@@ -111168,27 +111168,27 @@ var ChatGame;
             this.platform.body.immovable = true;
             this.game.input.mouse.capture = true;
             this.players = {};
-            this.socket.on("createPlayers", function (data) {
-                var players = data.players;
-                _this.hero.idConnection = data.id;
+            this.socket.on("createPlayers", function (players) {
                 for (var playerId in players) {
-                    if (!_this.players[playerId] && _this.hero.idConnection && (playerId !== _this.hero.idConnection)) {
+                    if (!_this.players[playerId] && _this.socket.id !== playerId) {
                         _this.players[playerId] = new ChatGame.Player(_this.game, players[playerId].x, players[playerId].y);
                     }
                 }
             });
-            this.socket.on("movePlayers", function (players) {
-                for (var playerId in players) {
-                    if (_this.players[playerId] && _this.hero.idConnection && (playerId !== _this.hero.idConnection)) {
-                        _this.players[playerId].moveToPosition = {
-                            x: players[playerId].x,
-                            y: players[playerId].y
-                        };
-                        var radius = _this.game.physics.arcade.moveToXY(_this.players[playerId], players[playerId].x, players[playerId].y, 100);
-                        _this.players[playerId].animation = _this.players[playerId].getAnimationByRadius(radius);
-                        _this.players[playerId].animations.play(_this.players[playerId].animation);
-                    }
+            this.socket.on("deletePlayer", function (player) {
+                if (_this.players[player.id]) {
+                    _this.players[player.id].destroy();
+                    delete _this.players[player.id];
                 }
+            });
+            this.socket.on("movePlayer", function (player) {
+                _this.players[player.id].moveToPosition = {
+                    x: player.x,
+                    y: player.y
+                };
+                var radius = _this.game.physics.arcade.moveToXY(_this.players[player.id], player.x, player.y, 100);
+                _this.players[player.id].animation = _this.players[player.id].getAnimationByRadius(radius);
+                _this.players[player.id].animations.play(_this.players[player.id].animation);
             });
         };
         Main.prototype.update = function () {
@@ -111280,7 +111280,7 @@ var ChatGame;
 })(ChatGame || (ChatGame = {}));
 
 /// <reference path="../node_modules/@types/socket.io-client/index.d.ts" /> 
-var socket = io();
+var socket = io.connect();
 window.onload = function () {
     var game = new ChatGame.Game(socket);
 };

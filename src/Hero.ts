@@ -43,17 +43,18 @@ namespace ChatGame {
     }
 
     setConnection() {
-      this.socket.on("connected", (data: any) => {
-        this.idConnection = data.id;
-        console.log(data.id);
+      this.socket.emit("newPlayer", {
+        id: this.socket.id,
+        x: this.body.position.x,
+        y: this.body.position.y
       });
     }
 
     sendMove() {
       this.socket.emit("move", {
-        id: this.idConnection,
-        x: this.body.position.x,
-        y: this.body.position.y
+        id: this.socket.id,
+        x: this.moveToPosition.x,
+        y: this.moveToPosition.y
       });
     }
 

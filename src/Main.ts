@@ -30,31 +30,31 @@ namespace ChatGame {
       this.game.input.mouse.capture = true;
       this.players = {};
 
-      this.socket.on("createPlayers", (data: any) => {
-        const players = data.players;
-        this.hero.idConnection = data.id;
-
+      this.socket.on("createPlayers", (players: any) => {
         for (const playerId in players) {
-          if (!this.players[playerId] && this.hero.idConnection && (playerId !== this.hero.idConnection)) {
+          if (!this.players[playerId] && this.socket.id !== playerId) {
             this.players[playerId] = new Player(this.game, players[playerId].x , players[playerId].y);
           }
         }
       });
 
-      this.socket.on("movePlayers", (players: any) => {
-        for (const playerId in players) {
-          if (this.players[playerId] && this.hero.idConnection && (playerId !== this.hero.idConnection)) {
-            this.players[playerId].moveToPosition = {
-              x: players[playerId].x,
-              y: players[playerId].y
-            };
-            const radius = this.game.physics.arcade.moveToXY(this.players[playerId],
-              players[playerId].x, players[playerId].y, 100);
-
-            this.players[playerId].animation = this.players[playerId].getAnimationByRadius(radius);
-            this.players[playerId].animations.play(this.players[playerId].animation);
-          }
+      this.socket.on("deletePlayer", (player: any) => {
+        if (this.players[player.id]) {
+          this.players[player.id].destroy();
+          delete this.players[player.id];
         }
+      });
+
+      this.socket.on("movePlayer", (player: any) => {
+        this.players[player.id].moveToPosition = {
+          x: player.x,
+          y: player.y
+        };
+        const radius = this.game.physics.arcade.moveToXY(this.players[player.id],
+          player.x, player.y, 100);
+
+        this.players[player.id].animation = this.players[player.id].getAnimationByRadius(radius);
+        this.players[player.id].animations.play(this.players[player.id].animation);
       });
     }
 

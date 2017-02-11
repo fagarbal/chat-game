@@ -1,7 +1,8 @@
 const express = require('express');
 const path = require('path');
 const app = express();
-const io = require('socket.io');
+const server = require('http').Server(app);  
+const io = require('socket.io')(server);
 
 app.set('port', process.env.PORT || 3000);
 app.set('view engine', 'pug');
@@ -10,33 +11,43 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res) => res.render('index'));
 
-const server = app.listen(app.get('port'), () => {
+server.listen(app.get('port'), () => {
   console.log('\nExpress server up and running at http://localhost:%s.\n', app.get('port'));
 });
 
-const socketIO = io(server, { origins: '*:*' });
-
 var players = {};
 
-socketIO.on('connection', (socket) => {
+io.on('connection', (socket) => {
 	var user = {
 	  id: socket.id,
 	};
 
-  setInterval(() => socketIO.sockets.emit('createPlayers',{ players, id: user.id }), 3000);
-  setInterval(() => socket.emit('connected', user), 3000);
+	socket.emit('connected', user);
 
-  socket.on('move', (data) => {
-  	players[socket.id] = {
+	socket.on('newPlayer', (data) => {
+		players[data.id] = {
   		x: data.x,
   		y: data.y
   	};
 
-  	socketIO.sockets.emit('movePlayers', players);
+  	io.sockets.emit('createPlayers', players);
+	});
+
+  socket.on('move', (data) => {
+  	players[data.id] = {
+  		id: data.id,
+  		x: data.x,
+  		y: data.y
+  	};
+
+  	io.sockets.emit('movePlayer', players[data.id]);
   });
 
   socket.on('disconnect', (data) => {
   	delete players[socket.id];
+  	io.sockets.emit('deletePlayer', {
+  		id: socket.id
+  	});
     socket.disconnect();
   });
 });
