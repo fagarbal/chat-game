@@ -11,6 +11,8 @@ html(lang='en')
     link(href='/css/main.css', rel='stylesheet')
 
   body
-    #input-text
-      input(type='text', id='message', placeholder='Send a message')
+    form(id='form', autocomplete='off')
+      #input-text
+        input(type='text', id='message', placeholder='Send a message', autocomplete='off', maxlength='16')
+
     script(src=`/js/${process.env.NODE_ENV === 'production' ? 'bundle.min.js' : 'bundle.js'}`)

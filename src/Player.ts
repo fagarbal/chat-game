@@ -3,6 +3,9 @@ namespace ChatGame {
     animation: string;
     moveToPosition: any;
     maskPosition: any;
+    messages: string[];
+    textPlayer: Phaser.Text;
+    playerRectangle: Phaser.Sprite;
 
     constructor(game: Phaser.Game, posX: number, posY: number, color?: number) {
       super(game, posX, posY, "sprite");
@@ -50,7 +53,35 @@ namespace ChatGame {
         y: 0
       };
 
+      this.messages = [];
+
       this.setMaskPosition("left-bottom");
+
+      const bmd = game.add.bitmapData(140, 82);
+
+      bmd.ctx.beginPath();
+      bmd.ctx.rect(0, 0, 140, 82);
+      bmd.ctx.fillStyle = "#ffffff";
+      bmd.ctx.fill();
+
+      this.playerRectangle = game.add.sprite(0, 0, bmd);
+      this.playerRectangle.position.y = -130;
+      this.playerRectangle.position.x = -75;
+
+      this.textPlayer = this.game.add.text(0, 0, "", {
+        font: "11px Arial",
+        fill: "#000000",
+        align: "left"
+      });
+
+      this.textPlayer.lineSpacing = -5;
+      this.textPlayer.position.x = 10;
+      this.textPlayer.position.y = 10;
+      this.playerRectangle.addChild(this.textPlayer);
+
+      this.playerRectangle.visible = false;
+
+      this.addChild(this.playerRectangle);
     }
 
     setMaskPosition(animation: string) {
@@ -104,6 +135,18 @@ namespace ChatGame {
       }
 
       return animation;
+    }
+
+    newMessage(message: string) {
+      if (this.messages.length === 4) {
+        this.messages.shift();
+      }
+
+      this.messages.push(message);
+
+      this.textPlayer.setText(this.messages.join("\n"));
+
+      this.playerRectangle.visible = true;
     }
 
     onCollide() {

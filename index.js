@@ -36,6 +36,10 @@ io.on('connection', (socket) => {
   	socket.broadcast.emit('movePlayer', players[data.id]);
   });
 
+  socket.on('sendMessage', (data) => {
+    socket.broadcast.emit('messagePlayer', data);
+  });
+
   socket.on('disconnect', (data) => {
   	delete players[socket.id];
   	io.sockets.emit('deletePlayer', {

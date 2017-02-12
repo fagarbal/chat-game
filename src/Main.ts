@@ -30,9 +30,34 @@ namespace ChatGame {
       // this.maskCircle = this.game.add.graphics(0, 0);
 
       // this.background.mask = this.maskCircle;
-
+      this.addInputs();
       this.setEvents();
       this.game.camera.follow(this.hero);
+    }
+
+    addInputs() {
+      const form = document.getElementById("form");
+      const inputMessage: any = document.getElementById("message");
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        if (inputMessage.value) {
+          this.sendMessage(inputMessage.value);
+        }
+
+        inputMessage.value = "";
+        inputMessage.blur();
+      });
+    }
+
+    sendMessage(message: string) {
+      this.socket.emit("sendMessage", {
+        id: this.socket.id,
+        message: message
+      });
+
+      this.hero.newMessage(message);
     }
 
     setEvents() {
@@ -49,6 +74,10 @@ namespace ChatGame {
           this.players[player.id].destroy();
           delete this.players[player.id];
         }
+      });
+
+      this.socket.on("messagePlayer", (message: any) => {
+        this.players[message.id].newMessage(message.message);
       });
 
       this.socket.on("movePlayer", (player: any) => {

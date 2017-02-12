@@ -111034,7 +111034,27 @@ var ChatGame;
                 x: 0,
                 y: 0
             };
+            this.messages = [];
             this.setMaskPosition("left-bottom");
+            var bmd = game.add.bitmapData(140, 82);
+            bmd.ctx.beginPath();
+            bmd.ctx.rect(0, 0, 140, 82);
+            bmd.ctx.fillStyle = "#ffffff";
+            bmd.ctx.fill();
+            this.playerRectangle = game.add.sprite(0, 0, bmd);
+            this.playerRectangle.position.y = -130;
+            this.playerRectangle.position.x = -75;
+            this.textPlayer = this.game.add.text(0, 0, "", {
+                font: "11px Arial",
+                fill: "#000000",
+                align: "left"
+            });
+            this.textPlayer.lineSpacing = -5;
+            this.textPlayer.position.x = 10;
+            this.textPlayer.position.y = 10;
+            this.playerRectangle.addChild(this.textPlayer);
+            this.playerRectangle.visible = false;
+            this.addChild(this.playerRectangle);
         }
         Player.prototype.setMaskPosition = function (animation) {
             this.maskPosition.x = this.body.position.x + 32;
@@ -111096,6 +111116,14 @@ var ChatGame;
                 animation = "left";
             }
             return animation;
+        };
+        Player.prototype.newMessage = function (message) {
+            if (this.messages.length === 4) {
+                this.messages.shift();
+            }
+            this.messages.push(message);
+            this.textPlayer.setText(this.messages.join("\n"));
+            this.playerRectangle.visible = true;
         };
         Player.prototype.onCollide = function () {
             this.body.velocity.x = 0;
@@ -111192,8 +111220,29 @@ var ChatGame;
             this.world.setBounds(0, 0, 1280, 960);
             // this.maskCircle = this.game.add.graphics(0, 0);
             // this.background.mask = this.maskCircle;
+            this.addInputs();
             this.setEvents();
             this.game.camera.follow(this.hero);
+        };
+        Main.prototype.addInputs = function () {
+            var _this = this;
+            var form = document.getElementById("form");
+            var inputMessage = document.getElementById("message");
+            form.addEventListener("submit", function (event) {
+                event.preventDefault();
+                if (inputMessage.value) {
+                    _this.sendMessage(inputMessage.value);
+                }
+                inputMessage.value = "";
+                inputMessage.blur();
+            });
+        };
+        Main.prototype.sendMessage = function (message) {
+            this.socket.emit("sendMessage", {
+                id: this.socket.id,
+                message: message
+            });
+            this.hero.newMessage(message);
         };
         Main.prototype.setEvents = function () {
             var _this = this;
@@ -111209,6 +111258,9 @@ var ChatGame;
                     _this.players[player.id].destroy();
                     delete _this.players[player.id];
                 }
+            });
+            this.socket.on("messagePlayer", function (message) {
+                _this.players[message.id].newMessage(message.message);
             });
             this.socket.on("movePlayer", function (player) {
                 _this.players[player.id].moveToPosition = {
