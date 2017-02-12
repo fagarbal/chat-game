@@ -111050,6 +111050,7 @@ var ChatGame;
             });
             this.textPlayer.lineSpacing = -5;
             this.playerRectangle.visible = false;
+            this.chatPositionY = 0;
             this.addChild(this.playerRectangle);
         }
         Player.prototype.setMaskPosition = function (animation) {
@@ -111123,6 +111124,7 @@ var ChatGame;
                 _this.textPlayer.setText(_this.messages.join("\n"));
                 _this.playerRectangle.position.y = -70 - (8 + ((_this.messages.length - 1) * 15));
                 _this.playerRectangle.height = 8 + (_this.messages.length * 15);
+                _this.chatPositionY = 16 - (_this.messages.length * 15);
                 if (!_this.messages.length) {
                     _this.playerRectangle.visible = false;
                 }
@@ -111131,6 +111133,7 @@ var ChatGame;
             this.messages.push(message);
             this.textPlayer.setText(this.messages.join("\n"));
             this.playerRectangle.height = 8 + (this.messages.length * 15);
+            this.chatPositionY = 16 - (this.messages.length * 15);
             this.playerRectangle.visible = true;
         };
         Player.prototype.onCollide = function () {
@@ -111146,7 +111149,7 @@ var ChatGame;
             }
             if (this.textPlayer.text) {
                 this.textPlayer.x = this.x - 65;
-                this.textPlayer.y = this.playerRectangle.worldPosition.y + 5;
+                this.textPlayer.y = this.y + this.chatPositionY - 75;
             }
             this.setMaskPosition(this.animation);
         };
