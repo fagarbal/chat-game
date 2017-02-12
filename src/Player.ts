@@ -2,6 +2,7 @@ namespace ChatGame {
   export class Player extends Phaser.Sprite {
     animation: string;
     moveToPosition: any;
+    maskCircle: Phaser.Graphics;
 
     constructor(game: Phaser.Game, posX: number, posY: number, color?: number) {
       super(game, posX, posY, "sprite");
@@ -44,12 +45,49 @@ namespace ChatGame {
         y: 0
       };
 
+      this.maskCircle = this.game.add.graphics(0, 0);
+      this.maskCircle.beginFill(0xffffff);
+      this.maskCircle.drawCircle(0, 0, 100);
+
+      this.addChild(this.maskCircle);
+
+      this.setMaskPosition("left-bottom");
+    }
+
+    setMaskPosition(animation: string) {
+      this.children[0].position.x = 0;
+      this.children[0].position.y = 0;
+
+      if (animation === "right") {
+        this.children[0].position.x = 75;
+      } else if (animation === "right-top") {
+        this.children[0].position.x = 75;
+        this.children[0].position.y = -75;
+      } else if (animation === "top") {
+        this.children[0].position.y = -100;
+      } else if (animation === "left-top") {
+        this.children[0].position.x = -75;
+        this.children[0].position.y = -75;
+      } else if (animation === "right-bottom") {
+        this.children[0].position.x = 75;
+        this.children[0].position.y = 75;
+      } else if (animation === "bottom") {
+        this.children[0].position.y = 100;
+      } else if (animation === "left-bottom") {
+        this.children[0].position.x = -75;
+        this.children[0].position.y = 75;
+      } else if (animation === "left") {
+        this.children[0].position.x = -75;
+      }
     }
 
     getAnimationByRadius(radius: number): string {
       const degrees = radius * (180 / Math.PI);
 
       let animation: string;
+
+      this.children[0].position.x = 0;
+      this.children[0].position.y = 0;
 
       if (degrees <= 22.5 && degrees >= -22.5) {
         animation = "right";

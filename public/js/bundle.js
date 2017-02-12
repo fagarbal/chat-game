@@ -111030,10 +111030,49 @@ var ChatGame;
                 x: 0,
                 y: 0
             };
+            this.maskCircle = this.game.add.graphics(0, 0);
+            this.maskCircle.beginFill(0xffffff);
+            this.maskCircle.drawCircle(0, 0, 100);
+            this.addChild(this.maskCircle);
+            this.setMaskPosition("left-bottom");
         }
+        Player.prototype.setMaskPosition = function (animation) {
+            this.children[0].position.x = 0;
+            this.children[0].position.y = 0;
+            if (animation === "right") {
+                this.children[0].position.x = 75;
+            }
+            else if (animation === "right-top") {
+                this.children[0].position.x = 75;
+                this.children[0].position.y = -75;
+            }
+            else if (animation === "top") {
+                this.children[0].position.y = -100;
+            }
+            else if (animation === "left-top") {
+                this.children[0].position.x = -75;
+                this.children[0].position.y = -75;
+            }
+            else if (animation === "right-bottom") {
+                this.children[0].position.x = 75;
+                this.children[0].position.y = 75;
+            }
+            else if (animation === "bottom") {
+                this.children[0].position.y = 100;
+            }
+            else if (animation === "left-bottom") {
+                this.children[0].position.x = -75;
+                this.children[0].position.y = 75;
+            }
+            else if (animation === "left") {
+                this.children[0].position.x = -75;
+            }
+        };
         Player.prototype.getAnimationByRadius = function (radius) {
             var degrees = radius * (180 / Math.PI);
             var animation;
+            this.children[0].position.x = 0;
+            this.children[0].position.y = 0;
             if (degrees <= 22.5 && degrees >= -22.5) {
                 animation = "right";
             }
@@ -111119,6 +111158,7 @@ var ChatGame;
                 var radius = this.game.physics.arcade.moveToXY(this, this.game.input.activePointer.x, this.game.input.activePointer.y, 100);
                 this.animation = this.getAnimationByRadius(radius);
                 this.animations.play(this.animation);
+                this.setMaskPosition(this.animation);
             }
         };
         return Hero;
@@ -111142,12 +111182,16 @@ var ChatGame;
         }
         Main.prototype.preload = function () {
             this.game.load.spritesheet("sprite", "img/player.png", 64, 96, 72);
+            this.game.load.image("background", "img/background.png");
         };
         Main.prototype.create = function () {
+            this.background = this.game.add.sprite(0, 0, "background");
+            this.background.scale.set(2);
             this.hero = new ChatGame.Hero(this.game, this.socket);
             this.game.input.mouse.capture = true;
             this.players = {};
             this.setEvents();
+            this.background.mask = this.hero.maskCircle;
         };
         Main.prototype.setEvents = function () {
             var _this = this;
@@ -111172,6 +111216,7 @@ var ChatGame;
                 var radius = _this.game.physics.arcade.moveToXY(_this.players[player.id], player.x, player.y, 100);
                 _this.players[player.id].animation = _this.players[player.id].getAnimationByRadius(radius);
                 _this.players[player.id].animations.play(_this.players[player.id].animation);
+                _this.players[player.id].setMaskPosition(_this.players[player.id].animation);
             });
         };
         Main.prototype.update = function () {

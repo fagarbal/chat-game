@@ -1,10 +1,9 @@
 namespace ChatGame {
   export class Main extends Phaser.State {
     hero: ChatGame.Hero;
-    platform: Phaser.Sprite;
-    mousePosition: any;
-    animation: string;
+    background: Phaser.Sprite;
     players: any;
+    maskGroup: Phaser.Group;
 
     constructor(private socket: SocketIOClient.Socket) {
       super();
@@ -13,15 +12,21 @@ namespace ChatGame {
 
     preload() {
       this.game.load.spritesheet("sprite", "img/player.png", 64, 96, 72);
+      this.game.load.image("background", "img/background.png");
     }
 
     create() {
+      this.background = this.game.add.sprite(0, 0, "background");
+      this.background.scale.set(2);
+
       this.hero = new Hero(this.game, this.socket);
 
       this.game.input.mouse.capture = true;
       this.players = {};
 
       this.setEvents();
+
+      this.background.mask = this.hero.maskCircle;
     }
 
     setEvents() {
@@ -50,6 +55,8 @@ namespace ChatGame {
 
         this.players[player.id].animation = this.players[player.id].getAnimationByRadius(radius);
         this.players[player.id].animations.play(this.players[player.id].animation);
+
+        this.players[player.id].setMaskPosition(this.players[player.id].animation);
       });
     }
 

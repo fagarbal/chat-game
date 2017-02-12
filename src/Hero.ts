@@ -48,6 +48,7 @@ namespace ChatGame {
 
         this.animation = this.getAnimationByRadius(radius);
         this.animations.play(this.animation);
+        this.setMaskPosition(this.animation);
       }
     }
   }
