@@ -111030,49 +111030,47 @@ var ChatGame;
                 x: 0,
                 y: 0
             };
-            this.maskCircle = this.game.add.graphics(0, 0);
-            this.maskCircle.beginFill(0xffffff);
-            this.maskCircle.drawCircle(0, 0, 100);
-            this.addChild(this.maskCircle);
+            this.maskPosition = {
+                x: 0,
+                y: 0
+            };
             this.setMaskPosition("left-bottom");
         }
         Player.prototype.setMaskPosition = function (animation) {
-            this.children[0].position.x = 0;
-            this.children[0].position.y = 0;
+            this.maskPosition.x = this.body.position.x + 32;
+            this.maskPosition.y = this.body.position.y + 48;
             if (animation === "right") {
-                this.children[0].position.x = 75;
+                this.maskPosition.x += 75;
             }
             else if (animation === "right-top") {
-                this.children[0].position.x = 75;
-                this.children[0].position.y = -75;
+                this.maskPosition.x += 75;
+                this.maskPosition.y += -75;
             }
             else if (animation === "top") {
-                this.children[0].position.y = -100;
+                this.maskPosition.y += -100;
             }
             else if (animation === "left-top") {
-                this.children[0].position.x = -75;
-                this.children[0].position.y = -75;
+                this.maskPosition.x += -75;
+                this.maskPosition.y += -75;
             }
             else if (animation === "right-bottom") {
-                this.children[0].position.x = 75;
-                this.children[0].position.y = 75;
+                this.maskPosition.x += 75;
+                this.maskPosition.y += 75;
             }
             else if (animation === "bottom") {
-                this.children[0].position.y = 100;
+                this.maskPosition.y += 100;
             }
             else if (animation === "left-bottom") {
-                this.children[0].position.x = -75;
-                this.children[0].position.y = 75;
+                this.maskPosition.x += -75;
+                this.maskPosition.y += 75;
             }
             else if (animation === "left") {
-                this.children[0].position.x = -75;
+                this.maskPosition.x += -75;
             }
         };
         Player.prototype.getAnimationByRadius = function (radius) {
             var degrees = radius * (180 / Math.PI);
             var animation;
-            this.children[0].position.x = 0;
-            this.children[0].position.y = 0;
             if (degrees <= 22.5 && degrees >= -22.5) {
                 animation = "right";
             }
@@ -111110,6 +111108,7 @@ var ChatGame;
                 this.body.velocity.y = 0;
                 this.animations.stop();
             }
+            this.setMaskPosition(this.animation);
         };
         return Player;
     }(Phaser.Sprite));
@@ -111190,8 +111189,9 @@ var ChatGame;
             this.hero = new ChatGame.Hero(this.game, this.socket);
             this.game.input.mouse.capture = true;
             this.players = {};
+            this.maskCircle = this.game.add.graphics(0, 0);
+            this.background.mask = this.maskCircle;
             this.setEvents();
-            this.background.mask = this.hero.maskCircle;
         };
         Main.prototype.setEvents = function () {
             var _this = this;
@@ -111224,6 +111224,14 @@ var ChatGame;
             for (var playerId in this.players) {
                 this.players[playerId].update();
             }
+            this.maskCircle.clear();
+            this.maskCircle.beginFill(0xffffff);
+            this.maskCircle.drawCircle(this.hero.maskPosition.x, this.hero.maskPosition.y, 100);
+            for (var playerId in this.players) {
+                this.players[playerId].update();
+                this.maskCircle.drawCircle(this.players[playerId].maskPosition.x, this.players[playerId].maskPosition.y, 100);
+            }
+            this.maskCircle.endFill();
         };
         return Main;
     }(Phaser.State));

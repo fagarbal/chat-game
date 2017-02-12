@@ -4,6 +4,7 @@ namespace ChatGame {
     background: Phaser.Sprite;
     players: any;
     maskGroup: Phaser.Group;
+    maskCircle: Phaser.Graphics;
 
     constructor(private socket: SocketIOClient.Socket) {
       super();
@@ -24,9 +25,11 @@ namespace ChatGame {
       this.game.input.mouse.capture = true;
       this.players = {};
 
-      this.setEvents();
+      this.maskCircle = this.game.add.graphics(0, 0);
 
-      this.background.mask = this.hero.maskCircle;
+      this.background.mask = this.maskCircle;
+
+      this.setEvents();
     }
 
     setEvents() {
@@ -66,6 +69,16 @@ namespace ChatGame {
       for (let playerId in this.players) {
         this.players[playerId].update();
       }
+      this.maskCircle.clear();
+
+      this.maskCircle.beginFill(0xffffff);
+      this.maskCircle.drawCircle(this.hero.maskPosition.x, this.hero.maskPosition.y, 100);
+
+      for (let playerId in this.players) {
+        this.players[playerId].update();
+        this.maskCircle.drawCircle(this.players[playerId].maskPosition.x, this.players[playerId].maskPosition.y, 100);
+      }
+      this.maskCircle.endFill();
     }
   }
 }
