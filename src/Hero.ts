@@ -5,7 +5,7 @@ namespace ChatGame {
     heroColor: number;
 
     constructor(game: Phaser.Game, socket: SocketIOClient.Socket) {
-      super(game, game.world.centerX, game.world.centerY);
+      super(game, 640, 480);
       this.socket = socket;
 
       this.game.input.onDown.add(this.onMouseDown, this);
@@ -34,17 +34,17 @@ namespace ChatGame {
     }
 
     onMouseDown() {
-      if (Phaser.Math.distance(this.game.input.activePointer.x, this.game.input.activePointer.y,
+      if (Phaser.Math.distance(this.game.input.activePointer.worldX, this.game.input.activePointer.worldY,
           this.position.x, this.position.y) >= 5) {
         this.moveToPosition = {
-          x: this.game.input.activePointer.x,
-          y: this.game.input.activePointer.y
+          x: this.game.input.activePointer.worldX,
+          y: this.game.input.activePointer.worldY
         };
 
         this.sendMove();
 
         const radius = this.game.physics.arcade.moveToXY(this,
-          this.game.input.activePointer.x, this.game.input.activePointer.y, 100);
+          this.game.input.activePointer.worldX, this.game.input.activePointer.worldY, 100);
 
         this.animation = this.getAnimationByRadius(radius);
         this.animations.play(this.animation);

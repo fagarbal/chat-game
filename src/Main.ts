@@ -25,11 +25,14 @@ namespace ChatGame {
       this.game.input.mouse.capture = true;
       this.players = {};
 
-      this.maskCircle = this.game.add.graphics(0, 0);
+      this.world.setBounds(0, 0, 1280, 960);
 
-      this.background.mask = this.maskCircle;
+      // this.maskCircle = this.game.add.graphics(0, 0);
+
+      // this.background.mask = this.maskCircle;
 
       this.setEvents();
+      this.game.camera.follow(this.hero);
     }
 
     setEvents() {
@@ -69,16 +72,16 @@ namespace ChatGame {
       for (let playerId in this.players) {
         this.players[playerId].update();
       }
-      this.maskCircle.clear();
+      // this.maskCircle.clear();
 
-      this.maskCircle.beginFill(0xffffff);
-      this.maskCircle.drawCircle(this.hero.maskPosition.x, this.hero.maskPosition.y, 100);
+      // this.maskCircle.beginFill(0xffffff);
+      // this.maskCircle.drawCircle(this.hero.maskPosition.x, this.hero.maskPosition.y, 100);
 
       for (let playerId in this.players) {
         this.players[playerId].update();
-        this.maskCircle.drawCircle(this.players[playerId].maskPosition.x, this.players[playerId].maskPosition.y, 100);
+        // this.maskCircle.drawCircle(this.players[playerId].maskPosition.x, this.players[playerId].maskPosition.y, 100);
       }
-      this.maskCircle.endFill();
+      // this.maskCircle.endFill();
     }
   }
 }

@@ -111125,7 +111125,7 @@ var ChatGame;
     var Hero = (function (_super) {
         __extends(Hero, _super);
         function Hero(game, socket) {
-            _super.call(this, game, game.world.centerX, game.world.centerY);
+            _super.call(this, game, 640, 480);
             this.socket = socket;
             this.game.input.onDown.add(this.onMouseDown, this);
             this.heroColor = this.tint;
@@ -111148,13 +111148,13 @@ var ChatGame;
             });
         };
         Hero.prototype.onMouseDown = function () {
-            if (Phaser.Math.distance(this.game.input.activePointer.x, this.game.input.activePointer.y, this.position.x, this.position.y) >= 5) {
+            if (Phaser.Math.distance(this.game.input.activePointer.worldX, this.game.input.activePointer.worldY, this.position.x, this.position.y) >= 5) {
                 this.moveToPosition = {
-                    x: this.game.input.activePointer.x,
-                    y: this.game.input.activePointer.y
+                    x: this.game.input.activePointer.worldX,
+                    y: this.game.input.activePointer.worldY
                 };
                 this.sendMove();
-                var radius = this.game.physics.arcade.moveToXY(this, this.game.input.activePointer.x, this.game.input.activePointer.y, 100);
+                var radius = this.game.physics.arcade.moveToXY(this, this.game.input.activePointer.worldX, this.game.input.activePointer.worldY, 100);
                 this.animation = this.getAnimationByRadius(radius);
                 this.animations.play(this.animation);
                 this.setMaskPosition(this.animation);
@@ -111189,9 +111189,11 @@ var ChatGame;
             this.hero = new ChatGame.Hero(this.game, this.socket);
             this.game.input.mouse.capture = true;
             this.players = {};
-            this.maskCircle = this.game.add.graphics(0, 0);
-            this.background.mask = this.maskCircle;
+            this.world.setBounds(0, 0, 1280, 960);
+            // this.maskCircle = this.game.add.graphics(0, 0);
+            // this.background.mask = this.maskCircle;
             this.setEvents();
+            this.game.camera.follow(this.hero);
         };
         Main.prototype.setEvents = function () {
             var _this = this;
@@ -111224,14 +111226,13 @@ var ChatGame;
             for (var playerId in this.players) {
                 this.players[playerId].update();
             }
-            this.maskCircle.clear();
-            this.maskCircle.beginFill(0xffffff);
-            this.maskCircle.drawCircle(this.hero.maskPosition.x, this.hero.maskPosition.y, 100);
+            // this.maskCircle.clear();
+            // this.maskCircle.beginFill(0xffffff);
+            // this.maskCircle.drawCircle(this.hero.maskPosition.x, this.hero.maskPosition.y, 100);
             for (var playerId in this.players) {
                 this.players[playerId].update();
-                this.maskCircle.drawCircle(this.players[playerId].maskPosition.x, this.players[playerId].maskPosition.y, 100);
             }
-            this.maskCircle.endFill();
+            // this.maskCircle.endFill();
         };
         return Main;
     }(Phaser.State));
@@ -111269,7 +111270,7 @@ var ChatGame;
     var Game = (function (_super) {
         __extends(Game, _super);
         function Game(socket) {
-            _super.call(this, 800, 600, Phaser.AUTO);
+            _super.call(this, window.innerWidth, window.innerHeight, Phaser.AUTO);
             this.state.add("Boot", ChatGame.Boot);
             this.state.add("Main", ChatGame.Main.bind(this, socket));
             this.state.start("Boot");
