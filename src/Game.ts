@@ -7,6 +7,10 @@ namespace ChatGame {
         this.state.add("Main", ChatGame.Main.bind(this, socket));
 
         this.state.start("Boot");
+
+        window.addEventListener("resize", (event) => {
+          this.scale.setGameSize(window.innerWidth, window.innerHeight);
+        });
       }
   }
 }

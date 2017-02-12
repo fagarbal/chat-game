@@ -111341,10 +111341,14 @@ var ChatGame;
     var Game = (function (_super) {
         __extends(Game, _super);
         function Game(socket) {
+            var _this = this;
             _super.call(this, window.innerWidth, window.innerHeight, Phaser.AUTO);
             this.state.add("Boot", ChatGame.Boot);
             this.state.add("Main", ChatGame.Main.bind(this, socket));
             this.state.start("Boot");
+            window.addEventListener("resize", function (event) {
+                _this.scale.setGameSize(window.innerWidth, window.innerHeight);
+            });
         }
         return Game;
     }(Phaser.Game));
