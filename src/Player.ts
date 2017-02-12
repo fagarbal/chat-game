@@ -65,7 +65,6 @@ namespace ChatGame {
       bmd.ctx.fill();
 
       this.playerRectangle = game.add.sprite(0, 0, bmd);
-      this.playerRectangle.position.y = -130;
       this.playerRectangle.position.x = -75;
 
       this.textPlayer = this.game.add.text(0, 0, "", {
@@ -75,9 +74,6 @@ namespace ChatGame {
       });
 
       this.textPlayer.lineSpacing = -5;
-      this.textPlayer.position.x = 10;
-      this.textPlayer.position.y = 10;
-      this.playerRectangle.addChild(this.textPlayer);
 
       this.playerRectangle.visible = false;
 
@@ -142,9 +138,25 @@ namespace ChatGame {
         this.messages.shift();
       }
 
+      setTimeout(() => {
+        this.messages.shift();
+        this.textPlayer.setText(this.messages.join("\n"));
+
+        this.playerRectangle.position.y = -70 - (8 + ((this.messages.length - 1) * 15));
+        this.playerRectangle.height = 8 + (this.messages.length * 15);
+
+        if (!this.messages.length) {
+          this.playerRectangle.visible = false;
+        }
+      }, 15000);
+
+      this.playerRectangle.position.y = -70 - (8 + (this.messages.length * 15));
+
       this.messages.push(message);
 
       this.textPlayer.setText(this.messages.join("\n"));
+
+      this.playerRectangle.height = 8 + (this.messages.length * 15);
 
       this.playerRectangle.visible = true;
     }
@@ -161,6 +173,11 @@ namespace ChatGame {
         this.body.velocity.x = 0;
         this.body.velocity.y = 0;
         this.animations.stop();
+      }
+
+      if (this.textPlayer.text) {
+        this.textPlayer.x = this.x - 65;
+        this.textPlayer.y = this.playerRectangle.worldPosition.y + 5;
       }
 
       this.setMaskPosition(this.animation);

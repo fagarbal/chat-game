@@ -111042,7 +111042,6 @@ var ChatGame;
             bmd.ctx.fillStyle = "#ffffff";
             bmd.ctx.fill();
             this.playerRectangle = game.add.sprite(0, 0, bmd);
-            this.playerRectangle.position.y = -130;
             this.playerRectangle.position.x = -75;
             this.textPlayer = this.game.add.text(0, 0, "", {
                 font: "11px Arial",
@@ -111050,9 +111049,6 @@ var ChatGame;
                 align: "left"
             });
             this.textPlayer.lineSpacing = -5;
-            this.textPlayer.position.x = 10;
-            this.textPlayer.position.y = 10;
-            this.playerRectangle.addChild(this.textPlayer);
             this.playerRectangle.visible = false;
             this.addChild(this.playerRectangle);
         }
@@ -111118,11 +111114,23 @@ var ChatGame;
             return animation;
         };
         Player.prototype.newMessage = function (message) {
+            var _this = this;
             if (this.messages.length === 4) {
                 this.messages.shift();
             }
+            setTimeout(function () {
+                _this.messages.shift();
+                _this.textPlayer.setText(_this.messages.join("\n"));
+                _this.playerRectangle.position.y = -70 - (8 + ((_this.messages.length - 1) * 15));
+                _this.playerRectangle.height = 8 + (_this.messages.length * 15);
+                if (!_this.messages.length) {
+                    _this.playerRectangle.visible = false;
+                }
+            }, 15000);
+            this.playerRectangle.position.y = -70 - (8 + (this.messages.length * 15));
             this.messages.push(message);
             this.textPlayer.setText(this.messages.join("\n"));
+            this.playerRectangle.height = 8 + (this.messages.length * 15);
             this.playerRectangle.visible = true;
         };
         Player.prototype.onCollide = function () {
@@ -111135,6 +111143,10 @@ var ChatGame;
                 this.body.velocity.x = 0;
                 this.body.velocity.y = 0;
                 this.animations.stop();
+            }
+            if (this.textPlayer.text) {
+                this.textPlayer.x = this.x - 65;
+                this.textPlayer.y = this.playerRectangle.worldPosition.y + 5;
             }
             this.setMaskPosition(this.animation);
         };
@@ -111238,11 +111250,15 @@ var ChatGame;
             });
         };
         Main.prototype.sendMessage = function (message) {
-            this.socket.emit("sendMessage", {
-                id: this.socket.id,
-                message: message
-            });
-            this.hero.newMessage(message);
+            var numMessages = Math.ceil(message.length / 16);
+            for (var i = 0; i < numMessages; i++) {
+                var messageSend = message.substring(i * 16, (i + 1) * 16);
+                this.socket.emit("sendMessage", {
+                    id: this.socket.id,
+                    message: messageSend
+                });
+                this.hero.newMessage(messageSend);
+            }
         };
         Main.prototype.setEvents = function () {
             var _this = this;

@@ -13,6 +13,6 @@ html(lang='en')
   body
     form(id='form', autocomplete='off')
       #input-text
-        input(type='text', id='message', placeholder='Send a message', autocomplete='off', maxlength='16')
+        input(type='text', id='message', placeholder='Send a message', autocomplete='off', maxlength='64')
 
     script(src=`/js/${process.env.NODE_ENV === 'production' ? 'bundle.min.js' : 'bundle.js'}`)

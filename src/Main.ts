@@ -52,12 +52,18 @@ namespace ChatGame {
     }
 
     sendMessage(message: string) {
-      this.socket.emit("sendMessage", {
-        id: this.socket.id,
-        message: message
-      });
+      const numMessages = Math.ceil(message.length / 16);
 
-      this.hero.newMessage(message);
+      for (let i = 0; i < numMessages; i++) {
+        const messageSend = message.substring(i * 16, (i + 1) * 16);
+
+        this.socket.emit("sendMessage", {
+          id: this.socket.id,
+          message: messageSend
+        });
+
+        this.hero.newMessage(messageSend);
+      }
     }
 
     setEvents() {
