@@ -102790,6 +102790,105 @@ PIXI.TextureSilentFail = true;
 * "What matters in this life is not what we do but what we do for others, the legacy we leave and the imprint we make." - Eric Meyer
 */
 
+/**
+* Provides access to the Webcam (if available)
+* @class Phaser.Plugin.Webcam
+*/
+Phaser.Plugin.Webcam = function (game, parent) {
+
+    Phaser.Plugin.call(this, game, parent);
+
+    if (!game.device.getUserMedia)
+    {
+        return false;
+    }
+
+    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+
+    this.context = null;
+    this.stream = null;
+
+    this.video = document.createElement('video');
+    this.video.autoplay = true;
+
+    this.onConnect = new Phaser.Signal();
+    this.onError = new Phaser.Signal();
+
+};
+
+Phaser.Plugin.Webcam.prototype = Object.create(Phaser.Plugin.prototype);
+Phaser.Plugin.Webcam.prototype.constructor = Phaser.Plugin.Webcam;
+
+Phaser.Plugin.Webcam.prototype.start = function (width, height, context) {
+
+    // console.log('Webcam start', width, height);
+
+    this.context = context;
+
+    if (!this.stream)
+    {
+        navigator.getUserMedia( { video: { mandatory: { minWidth: width, minHeight: height } } }, this.connectCallback.bind(this), this.errorCallback.bind(this));
+    }
+
+};
+
+Phaser.Plugin.Webcam.prototype.stop = function () {
+
+    if (this.stream)
+    {
+        this.stream.stop();
+        this.stream = null;
+    }
+
+};
+
+Phaser.Plugin.Webcam.prototype.connectCallback = function (stream) {
+
+    this.stream = stream;
+
+    this.video.src = window.URL.createObjectURL(this.stream);
+
+    this.onConnect.dispatch(this.video);
+
+};
+
+Phaser.Plugin.Webcam.prototype.errorCallback = function (event) {
+
+    this.onError.dispatch(event);
+
+};
+
+Phaser.Plugin.Webcam.prototype.grab = function (context, x, y) {
+
+    if (this.stream)
+    {
+        context.drawImage(this.video, x, y);
+    }
+
+};
+
+Phaser.Plugin.Webcam.prototype.update = function () {
+
+    if (this.stream)
+    {
+        this.context.drawImage(this.video, 0, 0);
+    }
+
+};
+
+/**
+* @name Phaser.Plugin.Webcam#active
+* @property {boolean} active - Is this Webcam plugin capturing a video stream or not?
+* @readonly
+*/
+Object.defineProperty(Phaser.Plugin.Webcam.prototype, "active", {
+
+    get: function() {
+        return (this.stream);
+    }
+
+});
+
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
@@ -111238,6 +111337,20 @@ var ChatGame;
             this.addInputs();
             this.setEvents();
             this.game.camera.follow(this.hero);
+            this.webcam = this.game.plugins.add(Phaser.Plugin.Webcam);
+            var bmd = this.game.make.bitmapData(800, 600);
+            this.spriteCam = bmd.addToWorld();
+            this.webcam.start(800, 600, bmd.context);
+            this.spriteCam.crop(new Phaser.Rectangle(200, 0, 400, 600));
+            this.spriteCam.scale.set(0.08, 0.08);
+            this.spriteCam.anchor.set(0.5);
+            this.spriteCam.y = -35;
+            var circle = this.game.add.graphics(0, 0);
+            circle.beginFill(0xFFFFFF);
+            circle.drawCircle(0, -35, 30);
+            this.hero.addChild(this.spriteCam);
+            this.spriteCam.mask = circle;
+            this.hero.addChild(circle);
         };
         Main.prototype.addInputs = function () {
             var _this = this;
@@ -111342,7 +111455,7 @@ var ChatGame;
         __extends(Game, _super);
         function Game(socket) {
             var _this = this;
-            _super.call(this, window.innerWidth, window.innerHeight, Phaser.AUTO);
+            _super.call(this, window.innerWidth, window.innerHeight, Phaser.CANVAS);
             this.state.add("Boot", ChatGame.Boot);
             this.state.add("Main", ChatGame.Main.bind(this, socket));
             this.state.start("Boot");

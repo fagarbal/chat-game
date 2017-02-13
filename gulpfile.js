@@ -28,6 +28,7 @@ gulp.task('build', ['lint'], () => {
 gulp.task('bundle', ['build'], () => {
   return gulp.src([
     'lib/phaser.js',
+    'lib/webcam.js',
     'lib/socket.io.js',
     '.build/Player.js',
     '.build/Hero.js',

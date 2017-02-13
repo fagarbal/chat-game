@@ -5,6 +5,8 @@ namespace ChatGame {
     players: any;
     maskGroup: Phaser.Group;
     maskCircle: Phaser.Graphics;
+    webcam: Phaser.Plugin.Webcam;
+    spriteCam: Phaser.Image;
 
     constructor(private socket: SocketIOClient.Socket) {
       super();
@@ -33,6 +35,25 @@ namespace ChatGame {
       this.addInputs();
       this.setEvents();
       this.game.camera.follow(this.hero);
+
+      this.webcam = this.game.plugins.add(Phaser.Plugin.Webcam);
+
+      const bmd = this.game.make.bitmapData(800, 600);
+      this.spriteCam = bmd.addToWorld();
+
+      this.webcam.start(800, 600, bmd.context);
+      this.spriteCam.crop(new Phaser.Rectangle(200, 0, 400, 600));
+      this.spriteCam.scale.set(0.08, 0.08);
+      this.spriteCam.anchor.set(0.5);
+      this.spriteCam.y = -35;
+
+      const circle = this.game.add.graphics(0, 0);
+      circle.beginFill(0xFFFFFF);
+      circle.drawCircle(0, -35, 30);
+
+      this.hero.addChild(this.spriteCam);
+      this.spriteCam.mask = circle;
+      this.hero.addChild(circle);
     }
 
     addInputs() {
