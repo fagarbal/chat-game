@@ -111373,6 +111373,7 @@ var ChatGame;
             var form = document.getElementById("form");
             var inputMessage = document.getElementById("message");
             var inputNick = document.getElementById("nickname");
+            document.getElementsByTagName("canvas")[0].tabIndex = 1;
             document.getElementsByTagName("canvas")[0].addEventListener("click", function (event) {
                 inputMessage.blur();
                 inputNick.blur();
