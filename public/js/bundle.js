@@ -111323,7 +111323,7 @@ var ChatGame;
         }
         Main.prototype.preload = function () {
             this.game.load.spritesheet("sprite", "img/player.png", 64, 96, 72);
-            this.game.load.image("background", "img/background.png");
+            this.game.load.image("background", "img/background.jpg");
         };
         Main.prototype.create = function () {
             this.background = this.game.add.sprite(0, 0, "background");
@@ -111331,16 +111331,18 @@ var ChatGame;
             this.hero = new ChatGame.Hero(this.game, this.socket);
             this.game.input.mouse.capture = true;
             this.players = {};
-            this.world.setBounds(0, 0, 1280, 960);
+            this.world.setBounds(0, 0, 1854 * 2, 966 * 2);
             // this.maskCircle = this.game.add.graphics(0, 0);
             // this.background.mask = this.maskCircle;
             this.addInputs();
             this.setEvents();
             this.game.camera.follow(this.hero);
             this.webcam = this.game.plugins.add(Phaser.Plugin.Webcam);
-            var bmd = this.game.make.bitmapData(800, 600);
-            this.spriteCam = bmd.addToWorld();
-            this.webcam.start(800, 600, bmd.context);
+            this.bmd = this.game.make.bitmapData(800, 600);
+            this.spriteCam = this.bmd.addToWorld();
+            this.bmd.height = 60;
+            this.bmd.width = 80;
+            this.webcam.start(80, 60, this.bmd.context);
             this.spriteCam.crop(new Phaser.Rectangle(200, 0, 400, 600));
             this.spriteCam.scale.set(0.08, 0.08);
             this.spriteCam.anchor.set(0.5);
