@@ -17,14 +17,20 @@ canvas {
   transform: translate(-50%, -50%);
 }
 
-#message {
+#message, #nickname  {
   position: absolute;
   z-index: 10;
   width: 89%;
   margin: 0 auto;
   border: 1px solid lightsalmon;
-  bottom: 11px;
   height: 30px;
   padding: 0 10px;
 }
 
+#message {
+  bottom: 11px;
+}
+
+#nickname {
+  top: 11px;
+}

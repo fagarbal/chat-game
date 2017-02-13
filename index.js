@@ -30,6 +30,12 @@ io.on('connection', (socket) => {
   	io.sockets.emit('createPlayers', players);
 	});
 
+  socket.on('sendNickname', (data) => {
+    players[data.id].nickname = data.nickname;
+
+    socket.broadcast.emit('changeNickname', data);
+  })
+
   socket.on('move', (data) => {
   	players[data.id] = data;
 

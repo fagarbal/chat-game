@@ -111147,9 +111147,16 @@ var ChatGame;
                 fill: "#000000",
                 align: "left"
             });
+            this.textNickname = this.game.add.text(0, 60, "Anonymous", {
+                font: "12px Arial",
+                fill: "#000000",
+                align: "center"
+            });
+            this.textNickname.anchor.set(0.5);
             this.textPlayer.lineSpacing = -5;
             this.playerRectangle.visible = false;
             this.chatPositionY = 0;
+            this.addChild(this.textNickname);
             this.addChild(this.playerRectangle);
         }
         Player.prototype.setMaskPosition = function (animation) {
@@ -111278,7 +111285,8 @@ var ChatGame;
                 id: this.socket.id,
                 x: this.body.position.x,
                 y: this.body.position.y,
-                color: this.heroColor
+                color: this.heroColor,
+                nickname: this.textNickname.text
             });
         };
         Hero.prototype.sendMove = function () {
@@ -111286,7 +111294,8 @@ var ChatGame;
                 id: this.socket.id,
                 x: this.moveToPosition.x,
                 y: this.moveToPosition.y,
-                color: this.heroColor
+                color: this.heroColor,
+                nickname: this.textNickname.text
             });
         };
         Hero.prototype.onMouseDown = function () {
@@ -111352,19 +111361,43 @@ var ChatGame;
             circle.drawCircle(0, -35, 30);
             this.hero.addChild(this.spriteCam);
             this.spriteCam.mask = circle;
+            this.textConnected = this.game.add.text(this.game.camera.x, this.game.camera.y, "Conected: 1", {
+                font: "13px Arial",
+                fill: "#000000",
+                align: "left"
+            });
             this.hero.addChild(circle);
         };
         Main.prototype.addInputs = function () {
             var _this = this;
             var form = document.getElementById("form");
             var inputMessage = document.getElementById("message");
-            form.addEventListener("submit", function (event) {
-                event.preventDefault();
-                if (inputMessage.value) {
-                    _this.sendMessage(inputMessage.value);
-                }
-                inputMessage.value = "";
+            var inputNick = document.getElementById("nickname");
+            document.getElementsByTagName("canvas")[0].addEventListener("click", function (event) {
                 inputMessage.blur();
+                inputNick.blur();
+            });
+            var eventEnter = function (event) {
+                event.preventDefault();
+                if (event.keyCode === 13) {
+                    if (inputMessage.value) {
+                        _this.sendMessage(inputMessage.value);
+                    }
+                    if (inputNick.value !== _this.hero.textNickname.text) {
+                        _this.sendNick(inputNick.value);
+                        _this.hero.textNickname.text = inputNick.value;
+                        _this.updateNicknames();
+                    }
+                    inputMessage.value = "";
+                }
+            };
+            inputMessage.addEventListener("keyup", eventEnter);
+            inputNick.addEventListener("keyup", eventEnter);
+        };
+        Main.prototype.sendNick = function (nickname) {
+            this.socket.emit("sendNickname", {
+                id: this.socket.id,
+                nickname: nickname
             });
         };
         Main.prototype.sendMessage = function (message) {
@@ -111384,17 +111417,24 @@ var ChatGame;
                 for (var playerId in players) {
                     if (!_this.players[playerId] && _this.socket.id !== playerId) {
                         _this.players[playerId] = new ChatGame.Player(_this.game, players[playerId].x, players[playerId].y, players[playerId].color);
+                        _this.players[playerId].textNickname.text = players[playerId].nickname || "Anonymous";
                     }
                 }
+                _this.updateNicknames();
             });
             this.socket.on("deletePlayer", function (player) {
                 if (_this.players[player.id]) {
                     _this.players[player.id].destroy();
                     delete _this.players[player.id];
                 }
+                _this.updateNicknames();
             });
             this.socket.on("messagePlayer", function (message) {
                 _this.players[message.id].newMessage(message.message);
+            });
+            this.socket.on("changeNickname", function (message) {
+                _this.players[message.id].textNickname.text = message.nickname;
+                _this.updateNicknames();
             });
             this.socket.on("movePlayer", function (player) {
                 _this.players[player.id].moveToPosition = {
@@ -111407,7 +111447,17 @@ var ChatGame;
                 _this.players[player.id].setMaskPosition(_this.players[player.id].animation);
             });
         };
+        Main.prototype.updateNicknames = function () {
+            var nicknames = this.hero.textNickname.text + "\n";
+            var count = 1;
+            for (var playerId in this.players) {
+                count++;
+                nicknames += this.players[playerId].textNickname.text + "\n";
+            }
+            this.textConnected.text = "Conected : " + count + "\n" + nicknames;
+        };
         Main.prototype.update = function () {
+            this.textConnected.position.set(this.game.camera.x + 20, this.game.camera.y + 60);
             this.hero.update();
             for (var playerId in this.players) {
                 this.players[playerId].update();

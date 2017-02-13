@@ -7,6 +7,7 @@ namespace ChatGame {
     maskCircle: Phaser.Graphics;
     webcam: Phaser.Plugin.Webcam;
     spriteCam: Phaser.Image;
+    textConnected: Phaser.Text;
     bmd: any;
 
     constructor(private socket: SocketIOClient.Socket) {
@@ -56,22 +57,52 @@ namespace ChatGame {
 
       this.hero.addChild(this.spriteCam);
       this.spriteCam.mask = circle;
+
+      this.textConnected = this.game.add.text(this.game.camera.x, this.game.camera.y, "Conected: 1", {
+        font: "13px Arial",
+        fill: "#000000",
+        align: "left"
+      });
+
+
       this.hero.addChild(circle);
     }
 
     addInputs() {
-      const form = document.getElementById("form");
+      const form: any = document.getElementById("form");
       const inputMessage: any = document.getElementById("message");
+      const inputNick: any = document.getElementById("nickname");
 
-      form.addEventListener("submit", (event) => {
-        event.preventDefault();
-
-        if (inputMessage.value) {
-          this.sendMessage(inputMessage.value);
-        }
-
-        inputMessage.value = "";
+      document.getElementsByTagName("canvas")[0].addEventListener("click", (event) => {
         inputMessage.blur();
+        inputNick.blur();
+      });
+
+      const eventEnter = (event: any) => {
+        event.preventDefault();
+        if (event.keyCode === 13) {
+          if (inputMessage.value) {
+            this.sendMessage(inputMessage.value);
+          }
+
+          if (inputNick.value !== this.hero.textNickname.text) {
+            this.sendNick(inputNick.value);
+            this.hero.textNickname.text = inputNick.value;
+            this.updateNicknames();
+          }
+
+          inputMessage.value = "";
+        }
+      };
+
+      inputMessage.addEventListener("keyup", eventEnter);
+      inputNick.addEventListener("keyup", eventEnter);
+    }
+
+    sendNick(nickname: string) {
+      this.socket.emit("sendNickname", {
+        id: this.socket.id,
+        nickname: nickname
       });
     }
 
@@ -95,8 +126,10 @@ namespace ChatGame {
         for (const playerId in players) {
           if (!this.players[playerId] && this.socket.id !== playerId) {
             this.players[playerId] = new Player(this.game, players[playerId].x, players[playerId].y, players[playerId].color);
+            this.players[playerId].textNickname.text = players[playerId].nickname || "Anonymous";
           }
         }
+        this.updateNicknames();
       });
 
       this.socket.on("deletePlayer", (player: any) => {
@@ -104,10 +137,16 @@ namespace ChatGame {
           this.players[player.id].destroy();
           delete this.players[player.id];
         }
+        this.updateNicknames();
       });
 
       this.socket.on("messagePlayer", (message: any) => {
         this.players[message.id].newMessage(message.message);
+      });
+
+      this.socket.on("changeNickname", (message: any) => {
+        this.players[message.id].textNickname.text = message.nickname;
+        this.updateNicknames();
       });
 
       this.socket.on("movePlayer", (player: any) => {
@@ -125,7 +164,21 @@ namespace ChatGame {
       });
     }
 
+    updateNicknames() {
+      let nicknames = this.hero.textNickname.text + "\n";
+
+      let count = 1;
+
+      for (let playerId in this.players) {
+        count++;
+        nicknames += this.players[playerId].textNickname.text + "\n";
+      }
+
+      this.textConnected.text = "Conected : " + count + "\n" + nicknames;
+    }
+
     update() {
+      this.textConnected.position.set(this.game.camera.x + 20, this.game.camera.y + 60);
       this.hero.update();
 
       for (let playerId in this.players) {

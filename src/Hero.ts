@@ -20,7 +20,8 @@ namespace ChatGame {
         id: this.socket.id,
         x: this.body.position.x,
         y: this.body.position.y,
-        color: this.heroColor
+        color: this.heroColor,
+        nickname: this.textNickname.text
       });
     }
 
@@ -29,7 +30,8 @@ namespace ChatGame {
         id: this.socket.id,
         x: this.moveToPosition.x,
         y: this.moveToPosition.y,
-        color: this.heroColor
+        color: this.heroColor,
+        nickname: this.textNickname.text
       });
     }
 

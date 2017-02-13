@@ -5,8 +5,10 @@ namespace ChatGame {
     maskPosition: any;
     messages: string[];
     textPlayer: Phaser.Text;
+    textNickname: Phaser.Text;
     playerRectangle: Phaser.Sprite;
     chatPositionY: number;
+    nickname: string;
 
     constructor(game: Phaser.Game, posX: number, posY: number, color?: number) {
       super(game, posX, posY, "sprite");
@@ -74,10 +76,19 @@ namespace ChatGame {
         align: "left"
       });
 
+      this.textNickname = this.game.add.text(0, 60, "Anonymous", {
+        font: "12px Arial",
+        fill: "#000000",
+        align: "center"
+      });
+
+      this.textNickname.anchor.set(0.5);
+
       this.textPlayer.lineSpacing = -5;
 
       this.playerRectangle.visible = false;
       this.chatPositionY = 0;
+      this.addChild(this.textNickname);
 
       this.addChild(this.playerRectangle);
     }
