@@ -111401,10 +111401,12 @@ var ChatGame;
                     if (inputMessage.value) {
                         if (inputMessage.value === ":bike") {
                             _this.change("bike", _this.hero, true);
+                            inputMessage.value = "";
                             return;
                         }
                         if (inputMessage.value === ":player") {
                             _this.change("player", _this.hero, true);
+                            inputMessage.value = "";
                             return;
                         }
                         _this.sendMessage(inputMessage.value);

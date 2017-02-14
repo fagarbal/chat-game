@@ -80,10 +80,12 @@ namespace ChatGame {
           if (inputMessage.value) {
             if (inputMessage.value === ":bike") {
               this.change("bike", this.hero, true);
+              inputMessage.value = "";
               return;
             }
             if (inputMessage.value === ":player") {
               this.change("player", this.hero, true);
+              inputMessage.value = "";
               return;
             }
             this.sendMessage(inputMessage.value);
