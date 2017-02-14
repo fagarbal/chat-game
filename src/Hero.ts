@@ -51,7 +51,7 @@ namespace ChatGame {
         this.sendMove();
 
         const radius = this.game.physics.arcade.moveToXY(this,
-          this.game.input.activePointer.worldX, this.game.input.activePointer.worldY, 100);
+          this.game.input.activePointer.worldX, this.game.input.activePointer.worldY, this.playerSpeed);
 
         this.animation = this.getAnimationByRadius(radius);
         this.animations.play(this.animation);

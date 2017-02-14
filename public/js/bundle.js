@@ -111163,6 +111163,7 @@ var ChatGame;
             this.animations.add("bottom", [48, 49, 50, 51, 52, 53, 54, 55], 9, true, true);
             this.animations.add("left-bottom", [56, 57, 58, 59, 60, 61, 62, 63], 9, true, true);
             this.selectedSprite = "bike";
+            this.playerSpeed = 200;
         };
         Player.prototype.loadPlayer = function () {
             this.loadTexture("sprite");
@@ -111175,6 +111176,7 @@ var ChatGame;
             this.animations.add("right-top", [54, 55, 56, 57, 58, 59, 60, 61, 62], 9, true, true);
             this.animations.add("top", [63, 64, 65, 66, 67, 68, 69, 70, 71], 9, true, true);
             this.selectedSprite = "player";
+            this.playerSpeed = 100;
         };
         Player.prototype.setMaskPosition = function (animation) {
             this.maskPosition.x = this.body.position.x + 32;
@@ -111326,7 +111328,7 @@ var ChatGame;
                     y: this.game.input.activePointer.worldY
                 };
                 this.sendMove();
-                var radius = this.game.physics.arcade.moveToXY(this, this.game.input.activePointer.worldX, this.game.input.activePointer.worldY, 100);
+                var radius = this.game.physics.arcade.moveToXY(this, this.game.input.activePointer.worldX, this.game.input.activePointer.worldY, this.playerSpeed);
                 this.animation = this.getAnimationByRadius(radius);
                 this.animations.play(this.animation);
                 this.setMaskPosition(this.animation);
@@ -111487,7 +111489,7 @@ var ChatGame;
                     x: player.x,
                     y: player.y
                 };
-                var radius = _this.game.physics.arcade.moveToXY(_this.players[player.id], player.x, player.y, 100);
+                var radius = _this.game.physics.arcade.moveToXY(_this.players[player.id], player.x, player.y, _this.players[player.id].playerSpeed);
                 _this.players[player.id].animation = _this.players[player.id].getAnimationByRadius(radius);
                 _this.players[player.id].animations.play(_this.players[player.id].animation);
                 _this.players[player.id].setMaskPosition(_this.players[player.id].animation);

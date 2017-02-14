@@ -182,7 +182,7 @@ namespace ChatGame {
           y: player.y
         };
         const radius = this.game.physics.arcade.moveToXY(this.players[player.id],
-          player.x, player.y, 100);
+          player.x, player.y, this.players[player.id].playerSpeed);
 
         this.players[player.id].animation = this.players[player.id].getAnimationByRadius(radius);
         this.players[player.id].animations.play(this.players[player.id].animation);

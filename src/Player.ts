@@ -10,6 +10,7 @@ namespace ChatGame {
     chatPositionY: number;
     nickname: string;
     selectedSprite: string;
+    playerSpeed: number;
 
     constructor(game: Phaser.Game, posX: number, posY: number, color?: number) {
       super(game, posX, posY, "sprite");
@@ -97,6 +98,8 @@ namespace ChatGame {
       this.animations.add("left-bottom", [56, 57, 58, 59, 60, 61, 62, 63], 9, true, true);
 
       this.selectedSprite = "bike";
+
+      this.playerSpeed = 200;
     }
 
     loadPlayer() {
@@ -111,6 +114,8 @@ namespace ChatGame {
       this.animations.add("top", [63, 64, 65, 66, 67, 68, 69, 70, 71], 9, true, true);
 
       this.selectedSprite = "player";
+
+      this.playerSpeed = 100;
     }
 
     setMaskPosition(animation: string) {
