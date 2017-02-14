@@ -9,22 +9,14 @@ namespace ChatGame {
     playerRectangle: Phaser.Sprite;
     chatPositionY: number;
     nickname: string;
+    selectedSprite: string;
 
     constructor(game: Phaser.Game, posX: number, posY: number, color?: number) {
       super(game, posX, posY, "sprite");
 
       this.anchor.set(0.5, 0.5);
-
+      this.loadPlayer();
       this.game.add.existing(this);
-
-      this.animations.add("left-bottom", [0, 1, 2, 3, 4, 5, 6, 7, 8], 9, true, true);
-      this.animations.add("bottom", [9, 10, 11, 12, 13, 14, 15, 16, 17], 9, true, true);
-      this.animations.add("right-bottom", [18, 19, 20, 21, 22, 23, 24, 25, 26], 9, true, true);
-      this.animations.add("left", [27, 28, 29, 30, 31, 32, 33, 34, 35], 9, true, true);
-      this.animations.add("left-top", [36, 37, 38, 39, 40, 41, 42, 43, 44], 9, true, true);
-      this.animations.add("right", [45, 46, 47, 48, 49, 50, 51, 52, 53], 9, true, true);
-      this.animations.add("right-top", [54, 55, 56, 57, 58, 59, 60, 61, 62], 9, true, true);
-      this.animations.add("top", [63, 64, 65, 66, 67, 68, 69, 70, 71], 9, true, true);
 
       this.game.physics.arcade.enable(this);
 
@@ -91,6 +83,34 @@ namespace ChatGame {
       this.addChild(this.textNickname);
 
       this.addChild(this.playerRectangle);
+    }
+
+    loadBike() {
+      this.loadTexture("bike", 0);
+      this.animations.add("left", [0, 1, 2, 3, 4, 5, 6, 7], 9, true, true);
+      this.animations.add("left-top", [8, 9, 10, 11, 12, 13, 14, 15], 9, true, true);
+      this.animations.add("top", [16, 17, 18, 19, 20, 21, 22, 23], 9, true, true);
+      this.animations.add("right-top", [24, 25, 26, 27, 28, 29, 30, 31], 9, true, true);
+      this.animations.add("right", [32, 33, 34, 35, 36, 37, 38, 39], 9, true, true);
+      this.animations.add("right-bottom", [40, 41, 42, 43, 44, 45, 46, 47], 9, true, true);
+      this.animations.add("bottom", [48, 49, 50, 51, 52, 53, 54, 55], 9, true, true);
+      this.animations.add("left-bottom", [56, 57, 58, 59, 60, 61, 62, 63], 9, true, true);
+
+      this.selectedSprite = "bike";
+    }
+
+    loadPlayer() {
+      this.loadTexture("sprite");
+      this.animations.add("left-bottom", [0, 1, 2, 3, 4, 5, 6, 7, 8], 9, true, true);
+      this.animations.add("bottom", [9, 10, 11, 12, 13, 14, 15, 16, 17], 9, true, true);
+      this.animations.add("right-bottom", [18, 19, 20, 21, 22, 23, 24, 25, 26], 9, true, true);
+      this.animations.add("left", [27, 28, 29, 30, 31, 32, 33, 34, 35], 9, true, true);
+      this.animations.add("left-top", [36, 37, 38, 39, 40, 41, 42, 43, 44], 9, true, true);
+      this.animations.add("right", [45, 46, 47, 48, 49, 50, 51, 52, 53], 9, true, true);
+      this.animations.add("right-top", [54, 55, 56, 57, 58, 59, 60, 61, 62], 9, true, true);
+      this.animations.add("top", [63, 64, 65, 66, 67, 68, 69, 70, 71], 9, true, true);
+
+      this.selectedSprite = "player";
     }
 
     setMaskPosition(animation: string) {

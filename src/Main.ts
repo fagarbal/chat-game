@@ -17,6 +17,7 @@ namespace ChatGame {
 
     preload() {
       this.game.load.spritesheet("sprite", "img/player.png", 64, 96, 72);
+      this.game.load.spritesheet("bike", "img/bicycle.png", 64, 64, 64);
       this.game.load.image("background", "img/background.jpg");
     }
 
@@ -77,6 +78,14 @@ namespace ChatGame {
         event.preventDefault();
         if (event.keyCode === 13) {
           if (inputMessage.value) {
+            if (inputMessage.value === ":bike") {
+              this.change("bike", this.hero, true);
+              return;
+            }
+            if (inputMessage.value === ":player") {
+              this.change("player", this.hero, true);
+              return;
+            }
             this.sendMessage(inputMessage.value);
           }
 
@@ -92,6 +101,20 @@ namespace ChatGame {
 
       inputMessage.addEventListener("keyup", eventEnter);
       inputNick.addEventListener("keyup", eventEnter);
+    }
+
+    change(sprite: string, player: ChatGame.Player, send?: boolean) {
+      if (sprite === "bike")
+        player.loadBike();
+      if (sprite === "player")
+        player.loadPlayer();
+
+      if (send) {
+        this.socket.emit("sendSprite", {
+          id: this.socket.id,
+          sprite: sprite
+        });
+      }
     }
 
     sendNick(nickname: string) {
@@ -122,6 +145,7 @@ namespace ChatGame {
           if (!this.players[playerId] && this.socket.id !== playerId) {
             this.players[playerId] = new Player(this.game, players[playerId].x, players[playerId].y, players[playerId].color);
             this.players[playerId].textNickname.text = players[playerId].nickname || "Anonymous";
+            this.change(players[playerId].sprite, this.players[playerId]);
           }
         }
         this.updateNicknames();
@@ -136,12 +160,18 @@ namespace ChatGame {
       });
 
       this.socket.on("messagePlayer", (message: any) => {
+        if (message.message === ":bike" || message.message === ":player")
+          return;
         this.players[message.id].newMessage(message.message);
       });
 
       this.socket.on("changeNickname", (message: any) => {
         this.players[message.id].textNickname.text = message.nickname;
         this.updateNicknames();
+      });
+
+      this.socket.on("changeSprite", (message: any) => {
+        this.change(message.sprite, this.players[message.id]);
       });
 
       this.socket.on("movePlayer", (player: any) => {

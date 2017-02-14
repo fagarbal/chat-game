@@ -34,7 +34,13 @@ io.on('connection', (socket) => {
     players[data.id].nickname = data.nickname;
 
     socket.broadcast.emit('changeNickname', data);
-  })
+  });
+
+  socket.on('sendSprite', (data) => {
+    players[data.id].sprite = data.sprite;
+
+    socket.broadcast.emit('changeSprite', data);
+  });
 
   socket.on('move', (data) => {
   	players[data.id] = data;

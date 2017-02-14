@@ -21,7 +21,8 @@ namespace ChatGame {
         x: this.body.position.x,
         y: this.body.position.y,
         color: this.heroColor,
-        nickname: this.textNickname.text
+        nickname: this.textNickname.text,
+        sprite: this.selectedSprite
       });
     }
 
@@ -31,7 +32,8 @@ namespace ChatGame {
         x: this.moveToPosition.x,
         y: this.moveToPosition.y,
         color: this.heroColor,
-        nickname: this.textNickname.text
+        nickname: this.textNickname.text,
+        sprite: this.selectedSprite
       });
     }
 

@@ -111102,15 +111102,8 @@ var ChatGame;
         function Player(game, posX, posY, color) {
             _super.call(this, game, posX, posY, "sprite");
             this.anchor.set(0.5, 0.5);
+            this.loadPlayer();
             this.game.add.existing(this);
-            this.animations.add("left-bottom", [0, 1, 2, 3, 4, 5, 6, 7, 8], 9, true, true);
-            this.animations.add("bottom", [9, 10, 11, 12, 13, 14, 15, 16, 17], 9, true, true);
-            this.animations.add("right-bottom", [18, 19, 20, 21, 22, 23, 24, 25, 26], 9, true, true);
-            this.animations.add("left", [27, 28, 29, 30, 31, 32, 33, 34, 35], 9, true, true);
-            this.animations.add("left-top", [36, 37, 38, 39, 40, 41, 42, 43, 44], 9, true, true);
-            this.animations.add("right", [45, 46, 47, 48, 49, 50, 51, 52, 53], 9, true, true);
-            this.animations.add("right-top", [54, 55, 56, 57, 58, 59, 60, 61, 62], 9, true, true);
-            this.animations.add("top", [63, 64, 65, 66, 67, 68, 69, 70, 71], 9, true, true);
             this.game.physics.arcade.enable(this);
             this.body.collideWorldBounds = true;
             this.body.enableBody = true;
@@ -111159,6 +111152,30 @@ var ChatGame;
             this.addChild(this.textNickname);
             this.addChild(this.playerRectangle);
         }
+        Player.prototype.loadBike = function () {
+            this.loadTexture("bike", 0);
+            this.animations.add("left", [0, 1, 2, 3, 4, 5, 6, 7], 9, true, true);
+            this.animations.add("left-top", [8, 9, 10, 11, 12, 13, 14, 15], 9, true, true);
+            this.animations.add("top", [16, 17, 18, 19, 20, 21, 22, 23], 9, true, true);
+            this.animations.add("right-top", [24, 25, 26, 27, 28, 29, 30, 31], 9, true, true);
+            this.animations.add("right", [32, 33, 34, 35, 36, 37, 38, 39], 9, true, true);
+            this.animations.add("right-bottom", [40, 41, 42, 43, 44, 45, 46, 47], 9, true, true);
+            this.animations.add("bottom", [48, 49, 50, 51, 52, 53, 54, 55], 9, true, true);
+            this.animations.add("left-bottom", [56, 57, 58, 59, 60, 61, 62, 63], 9, true, true);
+            this.selectedSprite = "bike";
+        };
+        Player.prototype.loadPlayer = function () {
+            this.loadTexture("sprite");
+            this.animations.add("left-bottom", [0, 1, 2, 3, 4, 5, 6, 7, 8], 9, true, true);
+            this.animations.add("bottom", [9, 10, 11, 12, 13, 14, 15, 16, 17], 9, true, true);
+            this.animations.add("right-bottom", [18, 19, 20, 21, 22, 23, 24, 25, 26], 9, true, true);
+            this.animations.add("left", [27, 28, 29, 30, 31, 32, 33, 34, 35], 9, true, true);
+            this.animations.add("left-top", [36, 37, 38, 39, 40, 41, 42, 43, 44], 9, true, true);
+            this.animations.add("right", [45, 46, 47, 48, 49, 50, 51, 52, 53], 9, true, true);
+            this.animations.add("right-top", [54, 55, 56, 57, 58, 59, 60, 61, 62], 9, true, true);
+            this.animations.add("top", [63, 64, 65, 66, 67, 68, 69, 70, 71], 9, true, true);
+            this.selectedSprite = "player";
+        };
         Player.prototype.setMaskPosition = function (animation) {
             this.maskPosition.x = this.body.position.x + 32;
             this.maskPosition.y = this.body.position.y + 48;
@@ -111286,7 +111303,8 @@ var ChatGame;
                 x: this.body.position.x,
                 y: this.body.position.y,
                 color: this.heroColor,
-                nickname: this.textNickname.text
+                nickname: this.textNickname.text,
+                sprite: this.selectedSprite
             });
         };
         Hero.prototype.sendMove = function () {
@@ -111295,7 +111313,8 @@ var ChatGame;
                 x: this.moveToPosition.x,
                 y: this.moveToPosition.y,
                 color: this.heroColor,
-                nickname: this.textNickname.text
+                nickname: this.textNickname.text,
+                sprite: this.selectedSprite
             });
         };
         Hero.prototype.onMouseDown = function () {
@@ -111334,6 +111353,7 @@ var ChatGame;
         }
         Main.prototype.preload = function () {
             this.game.load.spritesheet("sprite", "img/player.png", 64, 96, 72);
+            this.game.load.spritesheet("bike", "img/bicycle.png", 64, 64, 64);
             this.game.load.image("background", "img/background.jpg");
         };
         Main.prototype.create = function () {
@@ -111379,6 +111399,14 @@ var ChatGame;
                 event.preventDefault();
                 if (event.keyCode === 13) {
                     if (inputMessage.value) {
+                        if (inputMessage.value === ":bike") {
+                            _this.change("bike", _this.hero, true);
+                            return;
+                        }
+                        if (inputMessage.value === ":player") {
+                            _this.change("player", _this.hero, true);
+                            return;
+                        }
                         _this.sendMessage(inputMessage.value);
                     }
                     if (inputNick.value !== _this.hero.textNickname.text) {
@@ -111391,6 +111419,18 @@ var ChatGame;
             };
             inputMessage.addEventListener("keyup", eventEnter);
             inputNick.addEventListener("keyup", eventEnter);
+        };
+        Main.prototype.change = function (sprite, player, send) {
+            if (sprite === "bike")
+                player.loadBike();
+            if (sprite === "player")
+                player.loadPlayer();
+            if (send) {
+                this.socket.emit("sendSprite", {
+                    id: this.socket.id,
+                    sprite: sprite
+                });
+            }
         };
         Main.prototype.sendNick = function (nickname) {
             this.socket.emit("sendNickname", {
@@ -111416,6 +111456,7 @@ var ChatGame;
                     if (!_this.players[playerId] && _this.socket.id !== playerId) {
                         _this.players[playerId] = new ChatGame.Player(_this.game, players[playerId].x, players[playerId].y, players[playerId].color);
                         _this.players[playerId].textNickname.text = players[playerId].nickname || "Anonymous";
+                        _this.change(players[playerId].sprite, _this.players[playerId]);
                     }
                 }
                 _this.updateNicknames();
@@ -111428,11 +111469,16 @@ var ChatGame;
                 _this.updateNicknames();
             });
             this.socket.on("messagePlayer", function (message) {
+                if (message.message === ":bike" || message.message === ":player")
+                    return;
                 _this.players[message.id].newMessage(message.message);
             });
             this.socket.on("changeNickname", function (message) {
                 _this.players[message.id].textNickname.text = message.nickname;
                 _this.updateNicknames();
+            });
+            this.socket.on("changeSprite", function (message) {
+                _this.change(message.sprite, _this.players[message.id]);
             });
             this.socket.on("movePlayer", function (player) {
                 _this.players[player.id].moveToPosition = {
