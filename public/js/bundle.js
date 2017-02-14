@@ -111299,6 +111299,8 @@ var ChatGame;
             });
         };
         Hero.prototype.onMouseDown = function () {
+            document.getElementById("message").blur();
+            document.getElementById("nickname").blur();
             if (Phaser.Math.distance(this.game.input.activePointer.worldX, this.game.input.activePointer.worldY, this.position.x, this.position.y) >= 5) {
                 this.moveToPosition = {
                     x: this.game.input.activePointer.worldX,
@@ -111373,13 +111375,6 @@ var ChatGame;
             var form = document.getElementById("form");
             var inputMessage = document.getElementById("message");
             var inputNick = document.getElementById("nickname");
-            var canvas = document.getElementsByTagName("canvas")[0];
-            canvas.tabIndex = 1;
-            document.getElementsByTagName("canvas")[0].addEventListener("click", function (event) {
-                canvas.focus();
-                inputMessage.blur();
-                inputNick.blur();
-            });
             var eventEnter = function (event) {
                 event.preventDefault();
                 if (event.keyCode === 13) {
@@ -111510,7 +111505,7 @@ var ChatGame;
         __extends(Game, _super);
         function Game(socket) {
             var _this = this;
-            _super.call(this, window.innerWidth, window.innerHeight, Phaser.CANVAS);
+            _super.call(this, window.innerWidth, window.innerHeight, Phaser.AUTO);
             this.state.add("Boot", ChatGame.Boot);
             this.state.add("Main", ChatGame.Main.bind(this, socket));
             this.state.start("Boot");

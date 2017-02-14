@@ -72,13 +72,6 @@ namespace ChatGame {
       const form: any = document.getElementById("form");
       const inputMessage: any = document.getElementById("message");
       const inputNick: any = document.getElementById("nickname");
-      const canvas = document.getElementsByTagName("canvas")[0];
-      canvas.tabIndex = 1;
-      document.getElementsByTagName("canvas")[0].addEventListener("click", (event) => {
-        canvas.focus();
-        inputMessage.blur();
-        inputNick.blur();
-      });
 
       const eventEnter = (event: any) => {
         event.preventDefault();

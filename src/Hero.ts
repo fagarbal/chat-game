@@ -36,6 +36,9 @@ namespace ChatGame {
     }
 
     onMouseDown() {
+      document.getElementById("message").blur();
+      document.getElementById("nickname").blur();
+
       if (Phaser.Math.distance(this.game.input.activePointer.worldX, this.game.input.activePointer.worldY,
           this.position.x, this.position.y) >= 5) {
         this.moveToPosition = {
