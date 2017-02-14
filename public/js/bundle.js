@@ -111370,26 +111370,29 @@ var ChatGame;
             this.addInputs();
             this.setEvents();
             this.game.camera.follow(this.hero);
-            this.webcam = this.game.plugins.add(Phaser.Plugin.Webcam);
-            this.bmd = this.game.make.bitmapData(800, 600);
-            this.spriteCam = this.bmd.addToWorld();
-            this.bmd.height = 60;
-            this.bmd.width = 80;
-            this.webcam.start(80, 60, this.bmd.context);
-            this.spriteCam.crop(new Phaser.Rectangle(200, 0, 400, 600));
-            this.spriteCam.scale.set(0.08, 0.08);
-            this.spriteCam.anchor.set(0.5);
-            this.spriteCam.y = -35;
-            var circle = this.game.add.graphics(0, 0);
-            circle.beginFill(0xFFFFFF);
-            circle.drawCircle(0, -35, 30);
-            this.hero.addChild(this.spriteCam);
-            this.spriteCam.mask = circle;
             this.textConnected = this.game.add.text(this.game.camera.x, this.game.camera.y, "Conected: 1", {
                 font: "13px Arial",
                 fill: "#000000",
                 align: "left"
             });
+            var video = this.game.add.video();
+            //  If access to the camera is allowed
+            video.onAccess.add(this.camAllowed, this);
+            //  Start the stream
+            video.startMediaStream();
+        };
+        Main.prototype.camAllowed = function (video) {
+            this.spriteVideo = video.addToWorld();
+            this.spriteVideo.crop(new Phaser.Rectangle(100, 0, 440, 480));
+            this.spriteVideo.anchor.set(0.5);
+            this.spriteVideo.width = 44;
+            this.spriteVideo.height = 48;
+            this.spriteVideo.position.y = -40;
+            var circle = this.game.add.graphics(0, 0);
+            circle.beginFill(0xFFFFFF);
+            circle.drawCircle(0, -40, 44);
+            this.spriteVideo.mask = circle;
+            this.hero.addChild(this.spriteVideo);
             this.hero.addChild(circle);
         };
         Main.prototype.addInputs = function () {
