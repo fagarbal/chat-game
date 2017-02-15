@@ -12,6 +12,8 @@ namespace ChatGame {
     selectedSprite: string;
     playerSpeed: number;
     circleSprite: Phaser.Graphics;
+    spriteWebcam: Phaser.Sprite;
+    currentWebcam: string;
 
     constructor(game: Phaser.Game, posX: number, posY: number, color?: number) {
       super(game, posX, posY, "sprite");

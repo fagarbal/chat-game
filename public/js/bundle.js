@@ -111476,21 +111476,25 @@ var ChatGame;
         };
         Main.prototype.setEvents = function () {
             var _this = this;
-            var count = 0;
             this.socket.on("playerWebcam", function (player) {
                 if (_this.players[player.id]) {
-                    _this.game.load.image(count + "webcam:" + player.id, player.webcam);
-                    var loadImage = function (cnt) {
-                        var sprite = _this.game.add.sprite(0, 0, cnt + "webcam:" + player.id);
-                        sprite.anchor.set(0.5);
-                        sprite.position.y = -30;
-                        sprite.mask = _this.players[player.id].circleSprite;
+                    if (_this.players[player.id].currentWebcam && _this.cache.getImage(_this.players[player.id].currentWebcam)) {
+                        _this.players[player.id].removeChild(_this.players[player.id].spriteWebcam);
+                        _this.players[player.id].spriteWebcam.destroy();
+                        _this.cache.removeImage(_this.players[player.id].currentWebcam);
+                    }
+                    _this.game.load.image("webcam:" + player.id, player.webcam);
+                    var loadImage = function () {
+                        _this.players[player.id].spriteWebcam = _this.game.add.sprite(0, 0, "webcam:" + player.id);
+                        _this.players[player.id].spriteWebcam.anchor.set(0.5);
+                        _this.players[player.id].spriteWebcam.position.y = -30;
+                        _this.players[player.id].spriteWebcam.mask = _this.players[player.id].circleSprite;
                         _this.game.load.onLoadComplete.dispose();
-                        _this.players[player.id].addChild(sprite);
+                        _this.players[player.id].addChild(_this.players[player.id].spriteWebcam);
+                        _this.players[player.id].currentWebcam = "webcam:" + player.id;
                     };
-                    _this.game.load.onLoadComplete.addOnce(loadImage.bind(_this, count));
+                    _this.game.load.onLoadComplete.addOnce(loadImage.bind(_this));
                     _this.game.load.start();
-                    count++;
                 }
             });
             this.socket.on("createPlayers", function (players) {

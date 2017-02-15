@@ -160,26 +160,30 @@ namespace ChatGame {
     }
 
     setEvents() {
-      let count = 0;
-
       this.socket.on("playerWebcam", (player: any) => {
         if (this.players[player.id]) {
-          this.game.load.image(count + "webcam:" + player.id, player.webcam);
+          if (this.players[player.id].currentWebcam && this.cache.getImage(this.players[player.id].currentWebcam)) {
+            this.players[player.id].removeChild(this.players[player.id].spriteWebcam);
+            this.players[player.id].spriteWebcam.destroy();
+            this.cache.removeImage(this.players[player.id].currentWebcam);
+          }
 
-          const loadImage = (cnt: number) => {
-            const sprite = this.game.add.sprite(0, 0, cnt + "webcam:" + player.id);
-            sprite.anchor.set(0.5);
-            sprite.position.y = -30;
+          this.game.load.image("webcam:" + player.id, player.webcam);
 
-            sprite.mask = this.players[player.id].circleSprite;
+          const loadImage = () => {
+            this.players[player.id].spriteWebcam = this.game.add.sprite(0, 0, "webcam:" + player.id);
+            this.players[player.id].spriteWebcam.anchor.set(0.5);
+            this.players[player.id].spriteWebcam.position.y = -30;
+
+            this.players[player.id].spriteWebcam.mask = this.players[player.id].circleSprite;
 
             this.game.load.onLoadComplete.dispose();
-            this.players[player.id].addChild(sprite);
+            this.players[player.id].addChild(this.players[player.id].spriteWebcam);
+            this.players[player.id].currentWebcam = "webcam:" + player.id;
           };
 
-          this.game.load.onLoadComplete.addOnce(loadImage.bind(this, count));
+          this.game.load.onLoadComplete.addOnce(loadImage.bind(this));
           this.game.load.start();
-          count++;
         }
       });
 
