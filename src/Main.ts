@@ -94,7 +94,7 @@ namespace ChatGame {
 
       const eventEnter = (event: any) => {
         event.preventDefault();
-        if (event.keyCode === 13) {
+        if (event.keyCode === 13 || event.which === 13) {
           if (inputMessage.value) {
             if (inputMessage.value === ":bike") {
               this.change("bike", this.hero, true);

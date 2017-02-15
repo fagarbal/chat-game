@@ -111388,6 +111388,7 @@ var ChatGame;
         Main.prototype.camAllowed = function (video) {
             var _this = this;
             this.spriteVideo = video.addToWorld();
+            setTimeout(function () { return video.play(); }, 5000);
             this.spriteVideo.anchor.set(0.5);
             this.spriteVideo.width = 32;
             this.spriteVideo.height = 24;
@@ -111419,7 +111420,7 @@ var ChatGame;
             var inputNick = document.getElementById("nickname");
             var eventEnter = function (event) {
                 event.preventDefault();
-                if (event.keyCode === 13) {
+                if (event.keyCode === 13 || event.which === 13) {
                     if (inputMessage.value) {
                         if (inputMessage.value === ":bike") {
                             _this.change("bike", _this.hero, true);
