@@ -11,6 +11,7 @@ namespace ChatGame {
     nickname: string;
     selectedSprite: string;
     playerSpeed: number;
+    circleSprite: Phaser.Graphics;
 
     constructor(game: Phaser.Game, posX: number, posY: number, color?: number) {
       super(game, posX, posY, "sprite");
@@ -84,6 +85,12 @@ namespace ChatGame {
       this.addChild(this.textNickname);
 
       this.addChild(this.playerRectangle);
+
+      this.circleSprite = this.game.add.graphics(0, 0);
+      this.circleSprite.beginFill(0xFFFFFF);
+      this.circleSprite.drawCircle(0, -30, 24);
+
+      this.addChild(this.circleSprite);
     }
 
     loadBike() {

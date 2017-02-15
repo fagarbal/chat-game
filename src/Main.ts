@@ -10,6 +10,7 @@ namespace ChatGame {
     textConnected: Phaser.Text;
     bmd: any;
     spriteVideo: Phaser.Image;
+    grab: Phaser.Image;
 
     constructor(private socket: SocketIOClient.Socket) {
       super();
@@ -58,19 +59,32 @@ namespace ChatGame {
     camAllowed(video: Phaser.Video) {
       this.spriteVideo = video.addToWorld();
 
-      this.spriteVideo.crop(new Phaser.Rectangle(100, 0, 440, 480));
       this.spriteVideo.anchor.set(0.5);
-      this.spriteVideo.width = 44;
-      this.spriteVideo.height = 48;
-      this.spriteVideo.position.y = -40;
+      this.spriteVideo.width = 32;
+      this.spriteVideo.height = 24;
+      this.spriteVideo.position.y = -30;
 
-      const circle = this.game.add.graphics(0, 0);
-      circle.beginFill(0xFFFFFF);
-      circle.drawCircle(0, -40, 44);
-
-      this.spriteVideo.mask = circle;
+      this.spriteVideo.mask = this.hero.circleSprite;
       this.hero.addChild(this.spriteVideo);
-      this.hero.addChild(circle);
+
+      setInterval(() => {
+        video.grab();
+        const a: any = this.game.add.bitmapData(32, 24);
+        video.snapshot.width = 32;
+        video.snapshot.height = 24;
+        a.draw(video.snapshot, 0, 0, 32, 24);
+        a.width = 32;
+        a.height = 24;
+        this.sendWebcam(a.texture.baseTexture.source.toDataURL());
+        a.destroy();
+      }, 1500);
+    }
+
+    sendWebcam(base64: string) {
+      this.socket.emit("sendWebcam", {
+        id: this.socket.id,
+        webcam: base64
+      });
     }
 
     addInputs() {
@@ -146,6 +160,29 @@ namespace ChatGame {
     }
 
     setEvents() {
+      let count = 0;
+
+      this.socket.on("playerWebcam", (player: any) => {
+        if (this.players[player.id]) {
+          this.game.load.image(count + "webcam:" + player.id, player.webcam);
+
+          const loadImage = (cnt: number) => {
+            const sprite = this.game.add.sprite(0, 0, cnt + "webcam:" + player.id);
+            sprite.anchor.set(0.5);
+            sprite.position.y = -30;
+
+            sprite.mask = this.players[player.id].circleSprite;
+
+            this.game.load.onLoadComplete.dispose();
+            this.players[player.id].addChild(sprite);
+          };
+
+          this.game.load.onLoadComplete.addOnce(loadImage.bind(this, count));
+          this.game.load.start();
+          count++;
+        }
+      });
+
       this.socket.on("createPlayers", (players: any) => {
         for (const playerId in players) {
           if (!this.players[playerId] && this.socket.id !== playerId) {

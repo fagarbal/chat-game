@@ -111151,6 +111151,10 @@ var ChatGame;
             this.chatPositionY = 0;
             this.addChild(this.textNickname);
             this.addChild(this.playerRectangle);
+            this.circleSprite = this.game.add.graphics(0, 0);
+            this.circleSprite.beginFill(0xFFFFFF);
+            this.circleSprite.drawCircle(0, -30, 24);
+            this.addChild(this.circleSprite);
         }
         Player.prototype.loadBike = function () {
             this.loadTexture("bike", 0);
@@ -111382,18 +111386,31 @@ var ChatGame;
             video.startMediaStream();
         };
         Main.prototype.camAllowed = function (video) {
+            var _this = this;
             this.spriteVideo = video.addToWorld();
-            this.spriteVideo.crop(new Phaser.Rectangle(100, 0, 440, 480));
             this.spriteVideo.anchor.set(0.5);
-            this.spriteVideo.width = 44;
-            this.spriteVideo.height = 48;
-            this.spriteVideo.position.y = -40;
-            var circle = this.game.add.graphics(0, 0);
-            circle.beginFill(0xFFFFFF);
-            circle.drawCircle(0, -40, 44);
-            this.spriteVideo.mask = circle;
+            this.spriteVideo.width = 32;
+            this.spriteVideo.height = 24;
+            this.spriteVideo.position.y = -30;
+            this.spriteVideo.mask = this.hero.circleSprite;
             this.hero.addChild(this.spriteVideo);
-            this.hero.addChild(circle);
+            setInterval(function () {
+                video.grab();
+                var a = _this.game.add.bitmapData(32, 24);
+                video.snapshot.width = 32;
+                video.snapshot.height = 24;
+                a.draw(video.snapshot, 0, 0, 32, 24);
+                a.width = 32;
+                a.height = 24;
+                _this.sendWebcam(a.texture.baseTexture.source.toDataURL());
+                a.destroy();
+            }, 1500);
+        };
+        Main.prototype.sendWebcam = function (base64) {
+            this.socket.emit("sendWebcam", {
+                id: this.socket.id,
+                webcam: base64
+            });
         };
         Main.prototype.addInputs = function () {
             var _this = this;
@@ -111458,6 +111475,23 @@ var ChatGame;
         };
         Main.prototype.setEvents = function () {
             var _this = this;
+            var count = 0;
+            this.socket.on("playerWebcam", function (player) {
+                if (_this.players[player.id]) {
+                    _this.game.load.image(count + "webcam:" + player.id, player.webcam);
+                    var loadImage = function (cnt) {
+                        var sprite = _this.game.add.sprite(0, 0, cnt + "webcam:" + player.id);
+                        sprite.anchor.set(0.5);
+                        sprite.position.y = -30;
+                        sprite.mask = _this.players[player.id].circleSprite;
+                        _this.game.load.onLoadComplete.dispose();
+                        _this.players[player.id].addChild(sprite);
+                    };
+                    _this.game.load.onLoadComplete.addOnce(loadImage.bind(_this, count));
+                    _this.game.load.start();
+                    count++;
+                }
+            });
             this.socket.on("createPlayers", function (players) {
                 for (var playerId in players) {
                     if (!_this.players[playerId] && _this.socket.id !== playerId) {

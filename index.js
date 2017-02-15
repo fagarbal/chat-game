@@ -30,6 +30,10 @@ io.on('connection', (socket) => {
   	io.sockets.emit('createPlayers', players);
 	});
 
+  socket.on('sendWebcam', (data) => {
+    socket.broadcast.emit('playerWebcam', data);
+  });
+
   socket.on('sendNickname', (data) => {
     players[data.id].nickname = data.nickname;
 
