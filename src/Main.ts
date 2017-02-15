@@ -60,24 +60,24 @@ namespace ChatGame {
       this.spriteVideo = video.addToWorld();
       setTimeout(() => video.play(), 5000);
       this.spriteVideo.anchor.set(0.5);
-      this.spriteVideo.width = 32;
-      this.spriteVideo.height = 24;
-      this.spriteVideo.position.y = -30;
+      this.spriteVideo.width = 64;
+      this.spriteVideo.height = 48;
+      this.spriteVideo.position.y = -45;
 
       this.spriteVideo.mask = this.hero.circleSprite;
       this.hero.addChild(this.spriteVideo);
 
       setInterval(() => {
         video.grab();
-        const a: any = this.game.add.bitmapData(32, 24);
-        video.snapshot.width = 32;
-        video.snapshot.height = 24;
-        a.draw(video.snapshot, 0, 0, 32, 24);
-        a.width = 32;
-        a.height = 24;
+        const a: any = this.game.add.bitmapData(64, 48);
+        video.snapshot.width = 64;
+        video.snapshot.height = 48;
+        a.draw(video.snapshot, 0, 0, 64, 48);
+        a.width = 64;
+        a.height = 48;
         this.sendWebcam(a.texture.baseTexture.source.toDataURL());
         a.destroy();
-      }, 1500);
+      }, 1000);
     }
 
     sendWebcam(base64: string) {

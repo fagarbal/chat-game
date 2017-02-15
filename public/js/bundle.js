@@ -111154,12 +111154,12 @@ var ChatGame;
             this.addChild(this.playerRectangle);
             this.circleSprite = this.game.add.graphics(0, 0);
             this.circleSprite.beginFill(0xFFFFFF);
-            this.circleSprite.drawCircle(0, -30, 24);
+            this.circleSprite.drawCircle(0, -45, 48);
             this.addChild(this.circleSprite);
             if (color) {
                 this.spriteWebcam = this.game.add.sprite(0, 0);
                 this.spriteWebcam.anchor.set(0.5);
-                this.spriteWebcam.position.y = -30;
+                this.spriteWebcam.position.y = -45;
                 this.spriteWebcam.mask = this.circleSprite;
                 this.addChild(this.spriteWebcam);
             }
@@ -111398,22 +111398,22 @@ var ChatGame;
             this.spriteVideo = video.addToWorld();
             setTimeout(function () { return video.play(); }, 5000);
             this.spriteVideo.anchor.set(0.5);
-            this.spriteVideo.width = 32;
-            this.spriteVideo.height = 24;
-            this.spriteVideo.position.y = -30;
+            this.spriteVideo.width = 64;
+            this.spriteVideo.height = 48;
+            this.spriteVideo.position.y = -45;
             this.spriteVideo.mask = this.hero.circleSprite;
             this.hero.addChild(this.spriteVideo);
             setInterval(function () {
                 video.grab();
-                var a = _this.game.add.bitmapData(32, 24);
-                video.snapshot.width = 32;
-                video.snapshot.height = 24;
-                a.draw(video.snapshot, 0, 0, 32, 24);
-                a.width = 32;
-                a.height = 24;
+                var a = _this.game.add.bitmapData(64, 48);
+                video.snapshot.width = 64;
+                video.snapshot.height = 48;
+                a.draw(video.snapshot, 0, 0, 64, 48);
+                a.width = 64;
+                a.height = 48;
                 _this.sendWebcam(a.texture.baseTexture.source.toDataURL());
                 a.destroy();
-            }, 1500);
+            }, 1000);
         };
         Main.prototype.sendWebcam = function (base64) {
             this.socket.emit("sendWebcam", {
