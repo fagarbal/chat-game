@@ -111426,6 +111426,30 @@ var ChatGame;
             var form = document.getElementById("form");
             var inputMessage = document.getElementById("message");
             var inputNick = document.getElementById("nickname");
+            var canvas = document.getElementsByTagName("canvas")[0];
+            canvas.tabIndex = 1;
+            form.addEventListener("submit", function (event) {
+                event.preventDefault();
+                if (inputMessage.value) {
+                    if (inputMessage.value === ":bike") {
+                        _this.change("bike", _this.hero, true);
+                        inputMessage.value = "";
+                        return;
+                    }
+                    if (inputMessage.value === ":player") {
+                        _this.change("player", _this.hero, true);
+                        inputMessage.value = "";
+                        return;
+                    }
+                    _this.sendMessage(inputMessage.value);
+                }
+                if (inputNick.value !== _this.hero.textNickname.text) {
+                    _this.sendNick(inputNick.value);
+                    _this.hero.textNickname.text = inputNick.value;
+                    _this.updateNicknames();
+                }
+                inputMessage.value = "";
+            });
             var eventEnter = function (event) {
                 if (event.keyCode === 13 || event.which === 13 || event.key === "Enter") {
                     event.preventDefault();
@@ -111598,7 +111622,7 @@ var ChatGame;
         __extends(Game, _super);
         function Game(socket) {
             var _this = this;
-            _super.call(this, window.innerWidth, window.innerHeight, Phaser.CANVAS);
+            _super.call(this, window.innerWidth, window.innerHeight, Phaser.AUTO);
             this.state.add("Boot", ChatGame.Boot);
             this.state.add("Main", ChatGame.Main.bind(this, socket));
             this.state.start("Boot");

@@ -91,6 +91,34 @@ namespace ChatGame {
       const form: any = document.getElementById("form");
       const inputMessage: any = document.getElementById("message");
       const inputNick: any = document.getElementById("nickname");
+      const canvas: any = document.getElementsByTagName("canvas")[0];
+
+      canvas.tabIndex = 1;
+
+      form.addEventListener("submit", (event: any) => {
+        event.preventDefault();
+        if (inputMessage.value) {
+          if (inputMessage.value === ":bike") {
+            this.change("bike", this.hero, true);
+            inputMessage.value = "";
+            return;
+          }
+          if (inputMessage.value === ":player") {
+            this.change("player", this.hero, true);
+            inputMessage.value = "";
+            return;
+          }
+          this.sendMessage(inputMessage.value);
+        }
+
+        if (inputNick.value !== this.hero.textNickname.text) {
+          this.sendNick(inputNick.value);
+          this.hero.textNickname.text = inputNick.value;
+          this.updateNicknames();
+        }
+
+        inputMessage.value = "";
+      });
 
       const eventEnter = (event: any) => {
         if (event.keyCode === 13 || event.which === 13 || event.key === "Enter") {
