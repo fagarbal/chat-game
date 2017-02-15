@@ -162,28 +162,15 @@ namespace ChatGame {
     setEvents() {
       this.socket.on("playerWebcam", (player: any) => {
         if (this.players[player.id]) {
-          if (this.players[player.id].currentWebcam && this.cache.getImage(this.players[player.id].currentWebcam)) {
-            this.players[player.id].removeChild(this.players[player.id].spriteWebcam);
-            this.players[player.id].spriteWebcam.destroy();
-            this.cache.removeImage(this.players[player.id].currentWebcam);
-          }
-
-          this.game.load.image("webcam:" + player.id, player.webcam);
-
-          const loadImage = () => {
-            this.players[player.id].spriteWebcam = this.game.add.sprite(0, 0, "webcam:" + player.id);
-            this.players[player.id].spriteWebcam.anchor.set(0.5);
-            this.players[player.id].spriteWebcam.position.y = -30;
-
-            this.players[player.id].spriteWebcam.mask = this.players[player.id].circleSprite;
-
-            this.game.load.onLoadComplete.dispose();
-            this.players[player.id].addChild(this.players[player.id].spriteWebcam);
-            this.players[player.id].currentWebcam = "webcam:" + player.id;
+          const a = new Image();
+          const p = this.players[player.id];
+          a.onload = function () {
+            const bt = new PIXI.BaseTexture(this, PIXI.scaleModes.DEFAULT);
+            const t = new PIXI.Texture(bt);
+            p.spriteWebcam.setTexture(t);
           };
 
-          this.game.load.onLoadComplete.addOnce(loadImage.bind(this));
-          this.game.load.start();
+          a.src = player.webcam;
         }
       });
 
@@ -222,17 +209,19 @@ namespace ChatGame {
       });
 
       this.socket.on("movePlayer", (player: any) => {
-        this.players[player.id].moveToPosition = {
-          x: player.x,
-          y: player.y
-        };
-        const radius = this.game.physics.arcade.moveToXY(this.players[player.id],
-          player.x, player.y, this.players[player.id].playerSpeed);
+        if (this.players[player.id]) {
+          this.players[player.id].moveToPosition = {
+            x: player.x,
+            y: player.y
+          };
+          const radius = this.game.physics.arcade.moveToXY(this.players[player.id],
+            player.x, player.y, this.players[player.id].playerSpeed);
 
-        this.players[player.id].animation = this.players[player.id].getAnimationByRadius(radius);
-        this.players[player.id].animations.play(this.players[player.id].animation);
+          this.players[player.id].animation = this.players[player.id].getAnimationByRadius(radius);
+          this.players[player.id].animations.play(this.players[player.id].animation);
 
-        this.players[player.id].setMaskPosition(this.players[player.id].animation);
+          this.players[player.id].setMaskPosition(this.players[player.id].animation);
+        }
       });
     }
 

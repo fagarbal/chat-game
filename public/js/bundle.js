@@ -111111,13 +111111,14 @@ var ChatGame;
             this.body.onWorldBounds = new Phaser.Signal();
             this.body.onCollide.add(this.onCollide, this);
             this.body.onWorldBounds.add(this.onCollide, this);
+            var finalColor;
             if (!color) {
                 var colorR = Math.floor((Math.random() * 250) + 150);
                 var colorG = Math.floor((Math.random() * 250) + 150);
                 var colorB = Math.floor((Math.random() * 250) + 150);
-                color = colorR * colorG * colorB;
+                finalColor = colorR * colorG * colorB;
             }
-            this.tint = color;
+            this.tint = finalColor || color;
             this.moveToPosition = {
                 x: 0,
                 y: 0
@@ -111155,6 +111156,13 @@ var ChatGame;
             this.circleSprite.beginFill(0xFFFFFF);
             this.circleSprite.drawCircle(0, -30, 24);
             this.addChild(this.circleSprite);
+            if (color) {
+                this.spriteWebcam = this.game.add.sprite(0, 0);
+                this.spriteWebcam.anchor.set(0.5);
+                this.spriteWebcam.position.y = -30;
+                this.spriteWebcam.mask = this.circleSprite;
+                this.addChild(this.spriteWebcam);
+            }
         }
         Player.prototype.loadBike = function () {
             this.loadTexture("bike", 0);
@@ -111478,23 +111486,14 @@ var ChatGame;
             var _this = this;
             this.socket.on("playerWebcam", function (player) {
                 if (_this.players[player.id]) {
-                    if (_this.players[player.id].currentWebcam && _this.cache.getImage(_this.players[player.id].currentWebcam)) {
-                        _this.players[player.id].removeChild(_this.players[player.id].spriteWebcam);
-                        _this.players[player.id].spriteWebcam.destroy();
-                        _this.cache.removeImage(_this.players[player.id].currentWebcam);
-                    }
-                    _this.game.load.image("webcam:" + player.id, player.webcam);
-                    var loadImage = function () {
-                        _this.players[player.id].spriteWebcam = _this.game.add.sprite(0, 0, "webcam:" + player.id);
-                        _this.players[player.id].spriteWebcam.anchor.set(0.5);
-                        _this.players[player.id].spriteWebcam.position.y = -30;
-                        _this.players[player.id].spriteWebcam.mask = _this.players[player.id].circleSprite;
-                        _this.game.load.onLoadComplete.dispose();
-                        _this.players[player.id].addChild(_this.players[player.id].spriteWebcam);
-                        _this.players[player.id].currentWebcam = "webcam:" + player.id;
+                    var a = new Image();
+                    var p_1 = _this.players[player.id];
+                    a.onload = function () {
+                        var bt = new PIXI.BaseTexture(this, PIXI.scaleModes.DEFAULT);
+                        var t = new PIXI.Texture(bt);
+                        p_1.spriteWebcam.setTexture(t);
                     };
-                    _this.game.load.onLoadComplete.addOnce(loadImage.bind(_this));
-                    _this.game.load.start();
+                    a.src = player.webcam;
                 }
             });
             this.socket.on("createPlayers", function (players) {
@@ -111527,14 +111526,16 @@ var ChatGame;
                 _this.change(message.sprite, _this.players[message.id]);
             });
             this.socket.on("movePlayer", function (player) {
-                _this.players[player.id].moveToPosition = {
-                    x: player.x,
-                    y: player.y
-                };
-                var radius = _this.game.physics.arcade.moveToXY(_this.players[player.id], player.x, player.y, _this.players[player.id].playerSpeed);
-                _this.players[player.id].animation = _this.players[player.id].getAnimationByRadius(radius);
-                _this.players[player.id].animations.play(_this.players[player.id].animation);
-                _this.players[player.id].setMaskPosition(_this.players[player.id].animation);
+                if (_this.players[player.id]) {
+                    _this.players[player.id].moveToPosition = {
+                        x: player.x,
+                        y: player.y
+                    };
+                    var radius = _this.game.physics.arcade.moveToXY(_this.players[player.id], player.x, player.y, _this.players[player.id].playerSpeed);
+                    _this.players[player.id].animation = _this.players[player.id].getAnimationByRadius(radius);
+                    _this.players[player.id].animations.play(_this.players[player.id].animation);
+                    _this.players[player.id].setMaskPosition(_this.players[player.id].animation);
+                }
             });
         };
         Main.prototype.updateNicknames = function () {

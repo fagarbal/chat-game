@@ -32,15 +32,17 @@ namespace ChatGame {
       this.body.onCollide.add(this.onCollide, this);
       this.body.onWorldBounds.add(this.onCollide, this);
 
+      let finalColor: number;
+
       if (!color) {
         const colorR = Math.floor((Math.random() * 250) + 150);
         const colorG = Math.floor((Math.random() * 250) + 150);
         const colorB = Math.floor((Math.random() * 250) + 150);
 
-        color = colorR * colorG * colorB;
+        finalColor = colorR * colorG * colorB;
       }
 
-      this.tint = color;
+      this.tint = finalColor || color;
 
       this.moveToPosition = {
         x: 0,
@@ -93,6 +95,15 @@ namespace ChatGame {
       this.circleSprite.drawCircle(0, -30, 24);
 
       this.addChild(this.circleSprite);
+
+      if (color) {
+        this.spriteWebcam = this.game.add.sprite(0, 0);
+        this.spriteWebcam.anchor.set(0.5);
+        this.spriteWebcam.position.y = -30;
+
+        this.spriteWebcam.mask = this.circleSprite;
+        this.addChild(this.spriteWebcam);
+      }
     }
 
     loadBike() {
