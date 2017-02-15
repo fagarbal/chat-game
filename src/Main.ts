@@ -93,8 +93,8 @@ namespace ChatGame {
       const inputNick: any = document.getElementById("nickname");
 
       const eventEnter = (event: any) => {
-        event.preventDefault();
-        if (event.keyCode === 13 || event.which === 13) {
+        if (event.keyCode === 13 || event.which === 13 || event.key === "Enter") {
+          event.preventDefault();
           if (inputMessage.value) {
             if (inputMessage.value === ":bike") {
               this.change("bike", this.hero, true);

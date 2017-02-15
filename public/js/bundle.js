@@ -111419,8 +111419,8 @@ var ChatGame;
             var inputMessage = document.getElementById("message");
             var inputNick = document.getElementById("nickname");
             var eventEnter = function (event) {
-                event.preventDefault();
-                if (event.keyCode === 13 || event.which === 13) {
+                if (event.keyCode === 13 || event.which === 13 || event.key === "Enter") {
+                    event.preventDefault();
                     if (inputMessage.value) {
                         if (inputMessage.value === ":bike") {
                             _this.change("bike", _this.hero, true);
