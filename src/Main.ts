@@ -119,8 +119,8 @@ namespace ChatGame {
         }
       };
 
-      inputMessage.addEventListener("keyup", eventEnter);
-      inputNick.addEventListener("keyup", eventEnter);
+      inputMessage.addEventListener("keydown", eventEnter);
+      inputNick.addEventListener("keydown", eventEnter);
     }
 
     change(sprite: string, player: ChatGame.Player, send?: boolean) {
