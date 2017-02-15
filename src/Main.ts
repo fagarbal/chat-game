@@ -58,7 +58,7 @@ namespace ChatGame {
 
     camAllowed(video: Phaser.Video) {
       this.spriteVideo = video.addToWorld();
-      SetTimeout(() => video.play(), 5000);
+      setTimeout(() => video.play(), 5000);
       this.spriteVideo.anchor.set(0.5);
       this.spriteVideo.width = 32;
       this.spriteVideo.height = 24;
