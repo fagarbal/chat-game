@@ -9,7 +9,11 @@ app.set('view engine', 'pug');
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/', (req, res) => res.render('index'));
+app.get('/', (req, res) => {
+  if(req.headers['x-forwarded-proto']!='https')
+    res.redirect('https://chat-game-js.herokuapp.com');
+  res.render('index')
+});
 
 server.listen(app.get('port'), () => {
   console.log('\nExpress server up and running at http://localhost:%s.\n', app.get('port'));
