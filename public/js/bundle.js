@@ -111279,14 +111279,14 @@ var ChatGame;
             this.animations.stop();
         };
         Player.prototype.update = function () {
+            if (this.textPlayer.text) {
+                this.textPlayer.x = this.x - 65;
+                this.textPlayer.y = this.y + this.chatPositionY - 75;
+            }
             if (Phaser.Math.distance(this.moveToPosition.x, this.moveToPosition.y, this.position.x, this.position.y) < 5) {
                 this.body.velocity.x = 0;
                 this.body.velocity.y = 0;
                 this.animations.stop();
-            }
-            if (this.textPlayer.text) {
-                this.textPlayer.x = this.x - 65;
-                this.textPlayer.y = this.y + this.chatPositionY - 75;
             }
             this.setMaskPosition(this.animation);
         };
@@ -111382,11 +111382,12 @@ var ChatGame;
             this.addInputs();
             this.setEvents();
             this.game.camera.follow(this.hero);
-            this.textConnected = this.game.add.text(this.game.camera.x, this.game.camera.y, "Conected: 1", {
+            this.textConnected = this.game.add.text(20, 60, "Conected: 1", {
                 font: "13px Arial",
                 fill: "#000000",
                 align: "left"
             });
+            this.textConnected.fixedToCamera = true;
             this.webcam = this.game.plugins.add(Phaser.Plugin.Webcam);
             this.bmp = this.game.make.bitmapData(640, 480);
             this.bmp.width = 64;
@@ -111610,7 +111611,6 @@ var ChatGame;
         };
         Main.prototype.update = function () {
             this.updateCam();
-            this.textConnected.position.set(this.game.camera.x + 20, this.game.camera.y + 60);
             this.hero.update();
             for (var playerId in this.players) {
                 this.players[playerId].update();

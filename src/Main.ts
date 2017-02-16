@@ -42,11 +42,13 @@ namespace ChatGame {
       this.setEvents();
       this.game.camera.follow(this.hero);
 
-      this.textConnected = this.game.add.text(this.game.camera.x, this.game.camera.y, "Conected: 1", {
+      this.textConnected = this.game.add.text(20, 60, "Conected: 1", {
         font: "13px Arial",
         fill: "#000000",
         align: "left"
       });
+
+      this.textConnected.fixedToCamera = true;
 
       this.webcam = this.game.plugins.add(Phaser.Plugin.Webcam);
       this.bmp = this.game.make.bitmapData(640, 480);
@@ -306,8 +308,6 @@ namespace ChatGame {
 
     update() {
       this.updateCam();
-
-      this.textConnected.position.set(this.game.camera.x + 20, this.game.camera.y + 60);
       this.hero.update();
 
       for (let playerId in this.players) {

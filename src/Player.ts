@@ -230,16 +230,16 @@ namespace ChatGame {
     }
 
     update() {
+      if (this.textPlayer.text) {
+        this.textPlayer.x = this.x - 65;
+        this.textPlayer.y = this.y + this.chatPositionY - 75;
+      }
+
       if (Phaser.Math.distance(this.moveToPosition.x, this.moveToPosition.y,
         this.position.x, this.position.y) < 5) {
         this.body.velocity.x = 0;
         this.body.velocity.y = 0;
         this.animations.stop();
-      }
-
-      if (this.textPlayer.text) {
-        this.textPlayer.x = this.x - 65;
-        this.textPlayer.y = this.y + this.chatPositionY - 75;
       }
 
       this.setMaskPosition(this.animation);
