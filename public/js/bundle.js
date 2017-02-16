@@ -111662,7 +111662,7 @@ var ChatGame;
         __extends(Game, _super);
         function Game(socket) {
             var _this = this;
-            _super.call(this, window.innerWidth, window.innerHeight, Phaser.CANVAS);
+            _super.call(this, window.innerWidth, window.innerHeight, Phaser.WEBGL);
             this.state.add("Boot", ChatGame.Boot);
             this.state.add("Main", ChatGame.Main.bind(this, socket));
             this.state.start("Boot");
