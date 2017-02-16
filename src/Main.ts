@@ -66,6 +66,8 @@ namespace ChatGame {
         a.width = 64;
         a.height = 48;
       } else {
+        this.bmp.width = 48;
+        this.bmp.height = 64;
         a = this.game.add.bitmapData(48, 64);
         a.draw(this.bmp, 0, 0, 48, 64);
         a.width = 48;
@@ -100,6 +102,8 @@ namespace ChatGame {
           a.width = 64;
           a.height = 48;
         } else {
+          this.bmp.width = 48;
+          this.bmp.height = 64;
           a = this.game.add.bitmapData(48, 64);
           a.draw(this.bmp, 0, 0, 48, 64);
           a.width = 48;
@@ -227,8 +231,6 @@ namespace ChatGame {
           const bt = new PIXI.BaseTexture(a, PIXI.scaleModes.DEFAULT);
           const t: PIXI.Texture = new PIXI.Texture(bt);
           p.spriteWebcam.setTexture(t);
-          p.spriteWebcam.width = 64;
-          p.spriteWebcam.height = 48;
 
           if (lastTexture[player.id]) lastTexture[player.id].destroy();
 

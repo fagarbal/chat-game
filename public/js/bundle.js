@@ -111403,6 +111403,8 @@ var ChatGame;
                 a.height = 48;
             }
             else {
+                this.bmp.width = 48;
+                this.bmp.height = 64;
                 a = this.game.add.bitmapData(48, 64);
                 a.draw(this.bmp, 0, 0, 48, 64);
                 a.width = 48;
@@ -111435,6 +111437,8 @@ var ChatGame;
                     a.height = 48;
                 }
                 else {
+                    _this.bmp.width = 48;
+                    _this.bmp.height = 64;
                     a = _this.game.add.bitmapData(48, 64);
                     a.draw(_this.bmp, 0, 0, 48, 64);
                     a.width = 48;
@@ -111546,8 +111550,6 @@ var ChatGame;
                     var bt = new PIXI.BaseTexture(a, PIXI.scaleModes.DEFAULT);
                     var t = new PIXI.Texture(bt);
                     p.spriteWebcam.setTexture(t);
-                    p.spriteWebcam.width = 64;
-                    p.spriteWebcam.height = 48;
                     if (lastTexture[player.id])
                         lastTexture[player.id].destroy();
                     lastTexture[player.id] = t;
