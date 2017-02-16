@@ -111508,17 +111508,18 @@ var ChatGame;
         };
         Main.prototype.setEvents = function () {
             var _this = this;
+            var lastTexture = {};
             this.socket.on("playerWebcam", function (player) {
                 if (_this.players[player.id]) {
-                    var a_1 = new Image();
-                    var p_1 = _this.players[player.id];
-                    a_1.onload = function () {
-                        var bt = new PIXI.BaseTexture(this, PIXI.scaleModes.DEFAULT);
-                        var t = new PIXI.Texture(bt);
-                        p_1.spriteWebcam.setTexture(t);
-                        a_1.onload = null;
-                    };
-                    a_1.src = player.webcam;
+                    var a = new Image();
+                    a.src = player.webcam;
+                    var p = _this.players[player.id];
+                    var bt = new PIXI.BaseTexture(a, PIXI.scaleModes.DEFAULT);
+                    var t = new PIXI.Texture(bt);
+                    p.spriteWebcam.setTexture(t);
+                    if (lastTexture[player.id])
+                        lastTexture[player.id].destroy();
+                    lastTexture[player.id] = t;
                 }
             });
             this.socket.on("createPlayers", function (players) {

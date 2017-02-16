@@ -188,18 +188,19 @@ namespace ChatGame {
     }
 
     setEvents() {
+      let lastTexture: any = {};
       this.socket.on("playerWebcam", (player: any) => {
         if (this.players[player.id]) {
           const a = new Image();
-          const p = this.players[player.id];
-          a.onload = function () {
-            const bt = new PIXI.BaseTexture(this, PIXI.scaleModes.DEFAULT);
-            const t = new PIXI.Texture(bt);
-            p.spriteWebcam.setTexture(t);
-            a.onload = null;
-          };
-
           a.src = player.webcam;
+          const p: ChatGame.Player = this.players[player.id];
+          const bt = new PIXI.BaseTexture(a, PIXI.scaleModes.DEFAULT);
+          const t = new PIXI.Texture(bt);
+          p.spriteWebcam.setTexture(t);
+
+          if (lastTexture[player.id]) lastTexture[player.id].destroy();
+
+          lastTexture[player.id] = t;
         }
       });
 
