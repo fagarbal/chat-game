@@ -111396,7 +111396,7 @@ var ChatGame;
         Main.prototype.camAllowed = function (video) {
             var _this = this;
             this.spriteVideo = video.addToWorld();
-            setTimeout(function () { return video.play(); }, 5000);
+            video.play();
             this.spriteVideo.anchor.set(0.5);
             this.spriteVideo.width = 64;
             this.spriteVideo.height = 48;
@@ -111413,7 +111413,7 @@ var ChatGame;
                 a.height = 48;
                 _this.sendWebcam(a.texture.baseTexture.source.toDataURL());
                 a.destroy();
-            }, 1000);
+            }, 120);
         };
         Main.prototype.sendWebcam = function (base64) {
             this.socket.emit("sendWebcam", {

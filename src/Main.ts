@@ -58,7 +58,7 @@ namespace ChatGame {
 
     camAllowed(video: Phaser.Video) {
       this.spriteVideo = video.addToWorld();
-      setTimeout(() => video.play(), 5000);
+      video.play();
       this.spriteVideo.anchor.set(0.5);
       this.spriteVideo.width = 64;
       this.spriteVideo.height = 48;
@@ -77,7 +77,7 @@ namespace ChatGame {
         a.height = 48;
         this.sendWebcam(a.texture.baseTexture.source.toDataURL());
         a.destroy();
-      }, 1000);
+      }, 120);
     }
 
     sendWebcam(base64: string) {
