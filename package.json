@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "deploy": "gulp deploy",
-    "devel": "gulp watch & node index.js",
+    "devel": "gulp watch & NODE_ENV=development node index.js",
     "production": "NODE_ENV=production node index.js",
     "server": "node index.js",
     "start": "node index.js"

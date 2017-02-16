@@ -111368,15 +111368,17 @@ var ChatGame;
         Main.prototype.preload = function () {
             this.game.load.spritesheet("sprite", "img/player.png", 64, 96, 72);
             this.game.load.spritesheet("bike", "img/bicycle.png", 64, 64, 64);
-            this.game.load.image("background", "img/background.jpg");
+            this.game.load.tilemap("map", "maps/map.json", null, Phaser.Tilemap.TILED_JSON);
+            this.game.load.image("tiles", "img/terrain_atlas.png");
         };
         Main.prototype.create = function () {
-            this.background = this.game.add.sprite(0, 0, "background");
-            this.background.scale.set(2);
+            var map = this.game.add.tilemap("map");
+            map.addTilesetImage("tiles", "tiles");
+            var layer = map.createLayer("Terrain");
+            layer.resizeWorld();
             this.hero = new ChatGame.Hero(this.game, this.socket);
             this.game.input.mouse.capture = true;
             this.players = {};
-            this.world.setBounds(0, 0, 1854 * 2, 966 * 2);
             // this.maskCircle = this.game.add.graphics(0, 0);
             // this.background.mask = this.maskCircle;
             this.addInputs();
@@ -111660,7 +111662,7 @@ var ChatGame;
         __extends(Game, _super);
         function Game(socket) {
             var _this = this;
-            _super.call(this, window.innerWidth, window.innerHeight, Phaser.AUTO);
+            _super.call(this, window.innerWidth, window.innerHeight, Phaser.CANVAS);
             this.state.add("Boot", ChatGame.Boot);
             this.state.add("Main", ChatGame.Main.bind(this, socket));
             this.state.start("Boot");
