@@ -111413,6 +111413,8 @@ var ChatGame;
             var bt = new PIXI.BaseTexture(i, PIXI.scaleModes.DEFAULT);
             var t = new PIXI.Texture(bt);
             this.spriteVideo.setTexture(t);
+            this.spriteVideo.width = 64;
+            this.spriteVideo.height = 48;
             a.destroy();
         };
         Main.prototype.camAllowed = function () {
@@ -111544,6 +111546,8 @@ var ChatGame;
                     var bt = new PIXI.BaseTexture(a, PIXI.scaleModes.DEFAULT);
                     var t = new PIXI.Texture(bt);
                     p.spriteWebcam.setTexture(t);
+                    p.spriteWebcam.width = 64;
+                    p.spriteWebcam.height = 48;
                     if (lastTexture[player.id])
                         lastTexture[player.id].destroy();
                     lastTexture[player.id] = t;

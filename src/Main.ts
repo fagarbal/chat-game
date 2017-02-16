@@ -77,6 +77,8 @@ namespace ChatGame {
       const bt = new PIXI.BaseTexture(i, PIXI.scaleModes.DEFAULT);
       const t = new PIXI.Texture(bt);
       this.spriteVideo.setTexture(t);
+      this.spriteVideo.width = 64;
+      this.spriteVideo.height = 48;
       a.destroy();
     }
 
@@ -225,6 +227,8 @@ namespace ChatGame {
           const bt = new PIXI.BaseTexture(a, PIXI.scaleModes.DEFAULT);
           const t: PIXI.Texture = new PIXI.Texture(bt);
           p.spriteWebcam.setTexture(t);
+          p.spriteWebcam.width = 64;
+          p.spriteWebcam.height = 48;
 
           if (lastTexture[player.id]) lastTexture[player.id].destroy();
 
