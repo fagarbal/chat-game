@@ -11,6 +11,7 @@ namespace ChatGame {
     bmd: any;
     spriteVideo: Phaser.Image;
     grab: Phaser.Image;
+    bmp: Phaser.BitmapData;
 
     constructor(private socket: SocketIOClient.Socket) {
       super();
@@ -48,15 +49,31 @@ namespace ChatGame {
       });
 
       this.webcam = this.game.plugins.add(Phaser.Plugin.Webcam);
-      const bmp = this.game.make.bitmapData(640, 480);
+      this.bmp = this.game.make.bitmapData(640, 480);
+      this.bmp.width = 64;
+      this.bmp.height = 48;
 
-      this.webcam.start(640, 480, bmp.context);
+      this.webcam.start(640, 480, this.bmp.context);
 
-      this.camAllowed(bmp);
+      this.camAllowed();
     }
 
-    camAllowed(video: Phaser.BitmapData) {
-      this.spriteVideo = video.addToWorld();
+    updateCam() {
+      const a: any = this.game.add.bitmapData(64, 48);
+      a.draw(this.bmp, 0, 0, 64, 48);
+      a.width = 64;
+      a.height = 48;
+
+      const i = new Image();
+      i.src = a.texture.baseTexture.source.toDataURL();
+      const bt = new PIXI.BaseTexture(i, PIXI.scaleModes.DEFAULT);
+      const t = new PIXI.Texture(bt);
+      this.spriteVideo.setTexture(t);
+      a.destroy();
+    }
+
+    camAllowed() {
+      this.spriteVideo = this.bmp.addToWorld();
       this.spriteVideo.anchor.set(0.5);
       this.spriteVideo.width = 640;
       this.spriteVideo.height = 480;
@@ -64,27 +81,10 @@ namespace ChatGame {
 
       this.spriteVideo.mask = this.hero.circleSprite;
       this.hero.addChild(this.spriteVideo);
-      setInterval(() => {
-        const a: any = this.game.add.bitmapData(64, 48);
-        video.width = 64;
-        video.height = 48;
-        a.draw(video, 0, 0, 64, 48);
-        a.width = 64;
-        a.height = 48;
-
-        const i = new Image();
-        i.src = a.texture.baseTexture.source.toDataURL();
-        const bt = new PIXI.BaseTexture(i, PIXI.scaleModes.DEFAULT);
-        const t = new PIXI.Texture(bt);
-        this.spriteVideo.setTexture(t);
-        a.destroy();
-      }, 60);
 
       setInterval(() => {
         const a: any = this.game.add.bitmapData(64, 48);
-        video.width = 64;
-        video.height = 48;
-        a.draw(video, 0, 0, 64, 48);
+        a.draw(this.bmp, 0, 0, 64, 48);
         a.width = 64;
         a.height = 48;
         this.sendWebcam(a.texture.baseTexture.source.toDataURL());
@@ -281,6 +281,8 @@ namespace ChatGame {
     }
 
     update() {
+      this.updateCam();
+
       this.textConnected.position.set(this.game.camera.x + 20, this.game.camera.y + 60);
       this.hero.update();
 

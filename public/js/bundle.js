@@ -111388,13 +111388,27 @@ var ChatGame;
                 align: "left"
             });
             this.webcam = this.game.plugins.add(Phaser.Plugin.Webcam);
-            var bmp = this.game.make.bitmapData(640, 480);
-            this.webcam.start(640, 480, bmp.context);
-            this.camAllowed(bmp);
+            this.bmp = this.game.make.bitmapData(640, 480);
+            this.bmp.width = 64;
+            this.bmp.height = 48;
+            this.webcam.start(640, 480, this.bmp.context);
+            this.camAllowed();
         };
-        Main.prototype.camAllowed = function (video) {
+        Main.prototype.updateCam = function () {
+            var a = this.game.add.bitmapData(64, 48);
+            a.draw(this.bmp, 0, 0, 64, 48);
+            a.width = 64;
+            a.height = 48;
+            var i = new Image();
+            i.src = a.texture.baseTexture.source.toDataURL();
+            var bt = new PIXI.BaseTexture(i, PIXI.scaleModes.DEFAULT);
+            var t = new PIXI.Texture(bt);
+            this.spriteVideo.setTexture(t);
+            a.destroy();
+        };
+        Main.prototype.camAllowed = function () {
             var _this = this;
-            this.spriteVideo = video.addToWorld();
+            this.spriteVideo = this.bmp.addToWorld();
             this.spriteVideo.anchor.set(0.5);
             this.spriteVideo.width = 640;
             this.spriteVideo.height = 480;
@@ -111403,23 +111417,7 @@ var ChatGame;
             this.hero.addChild(this.spriteVideo);
             setInterval(function () {
                 var a = _this.game.add.bitmapData(64, 48);
-                video.width = 64;
-                video.height = 48;
-                a.draw(video, 0, 0, 64, 48);
-                a.width = 64;
-                a.height = 48;
-                var i = new Image();
-                i.src = a.texture.baseTexture.source.toDataURL();
-                var bt = new PIXI.BaseTexture(i, PIXI.scaleModes.DEFAULT);
-                var t = new PIXI.Texture(bt);
-                _this.spriteVideo.setTexture(t);
-                a.destroy();
-            }, 60);
-            setInterval(function () {
-                var a = _this.game.add.bitmapData(64, 48);
-                video.width = 64;
-                video.height = 48;
-                a.draw(video, 0, 0, 64, 48);
+                a.draw(_this.bmp, 0, 0, 64, 48);
                 a.width = 64;
                 a.height = 48;
                 _this.sendWebcam(a.texture.baseTexture.source.toDataURL());
@@ -111585,6 +111583,7 @@ var ChatGame;
             this.textConnected.text = "Conected : " + count + "\n" + nicknames;
         };
         Main.prototype.update = function () {
+            this.updateCam();
             this.textConnected.position.set(this.game.camera.x + 20, this.game.camera.y + 60);
             this.hero.update();
             for (var playerId in this.players) {
