@@ -111413,7 +111413,7 @@ var ChatGame;
                 a.height = 48;
                 _this.sendWebcam(a.texture.baseTexture.source.toDataURL());
                 a.destroy();
-            }, 120);
+            }, 333);
         };
         Main.prototype.sendWebcam = function (base64) {
             this.socket.emit("sendWebcam", {

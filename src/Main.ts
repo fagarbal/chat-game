@@ -77,7 +77,7 @@ namespace ChatGame {
         a.height = 48;
         this.sendWebcam(a.texture.baseTexture.source.toDataURL());
         a.destroy();
-      }, 120);
+      }, 333);
     }
 
     sendWebcam(base64: string) {
