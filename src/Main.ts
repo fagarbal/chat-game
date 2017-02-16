@@ -231,6 +231,8 @@ namespace ChatGame {
           const bt = new PIXI.BaseTexture(a, PIXI.scaleModes.DEFAULT);
           const t: PIXI.Texture = new PIXI.Texture(bt);
           p.spriteWebcam.setTexture(t);
+          if (p.spriteWebcam.width !== 64)
+            p.spriteWebcam.position.x = 7;
 
           if (lastTexture[player.id]) lastTexture[player.id].destroy();
 
