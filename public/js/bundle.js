@@ -111510,14 +111510,15 @@ var ChatGame;
             var _this = this;
             this.socket.on("playerWebcam", function (player) {
                 if (_this.players[player.id]) {
-                    var a = new Image();
+                    var a_1 = new Image();
                     var p_1 = _this.players[player.id];
-                    a.onload = function () {
+                    a_1.onload = function () {
                         var bt = new PIXI.BaseTexture(this, PIXI.scaleModes.DEFAULT);
                         var t = new PIXI.Texture(bt);
                         p_1.spriteWebcam.setTexture(t);
+                        a_1.onload = null;
                     };
-                    a.src = player.webcam;
+                    a_1.src = player.webcam;
                 }
             });
             this.socket.on("createPlayers", function (players) {

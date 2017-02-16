@@ -196,6 +196,7 @@ namespace ChatGame {
             const bt = new PIXI.BaseTexture(this, PIXI.scaleModes.DEFAULT);
             const t = new PIXI.Texture(bt);
             p.spriteWebcam.setTexture(t);
+            a.onload = null;
           };
 
           a.src = player.webcam;
