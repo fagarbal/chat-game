@@ -59,10 +59,18 @@ namespace ChatGame {
     }
 
     updateCam() {
-      const a: any = this.game.add.bitmapData(64, 48);
-      a.draw(this.bmp, 0, 0, 64, 48);
-      a.width = 64;
-      a.height = 48;
+      let a: any;
+      if (this.bmp.baseTexture.width === 640) {
+        a = this.game.add.bitmapData(64, 48);
+        a.draw(this.bmp, 0, 0, 64, 48);
+        a.width = 64;
+        a.height = 48;
+      } else {
+        a = this.game.add.bitmapData(48, 64);
+        a.draw(this.bmp, 0, 0, 48, 64);
+        a.width = 48;
+        a.height = 64;
+      }
 
       const i = new Image();
       i.src = a.texture.baseTexture.source.toDataURL();
@@ -83,10 +91,18 @@ namespace ChatGame {
       this.hero.addChild(this.spriteVideo);
 
       setInterval(() => {
-        const a: any = this.game.add.bitmapData(64, 48);
-        a.draw(this.bmp, 0, 0, 64, 48);
-        a.width = 64;
-        a.height = 48;
+        let a: any;
+        if (this.bmp.baseTexture.width === 640) {
+          a = this.game.add.bitmapData(64, 48);
+          a.draw(this.bmp, 0, 0, 64, 48);
+          a.width = 64;
+          a.height = 48;
+        } else {
+          a = this.game.add.bitmapData(48, 64);
+          a.draw(this.bmp, 0, 0, 48, 64);
+          a.width = 48;
+          a.height = 64;
+        }
         this.sendWebcam(a.texture.baseTexture.source.toDataURL());
         a.destroy();
       }, 333);
@@ -207,7 +223,7 @@ namespace ChatGame {
           a.src = player.webcam;
           const p: ChatGame.Player = this.players[player.id];
           const bt = new PIXI.BaseTexture(a, PIXI.scaleModes.DEFAULT);
-          const t = new PIXI.Texture(bt);
+          const t: PIXI.Texture = new PIXI.Texture(bt);
           p.spriteWebcam.setTexture(t);
 
           if (lastTexture[player.id]) lastTexture[player.id].destroy();

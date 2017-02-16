@@ -111395,10 +111395,19 @@ var ChatGame;
             this.camAllowed();
         };
         Main.prototype.updateCam = function () {
-            var a = this.game.add.bitmapData(64, 48);
-            a.draw(this.bmp, 0, 0, 64, 48);
-            a.width = 64;
-            a.height = 48;
+            var a;
+            if (this.bmp.baseTexture.width === 640) {
+                a = this.game.add.bitmapData(64, 48);
+                a.draw(this.bmp, 0, 0, 64, 48);
+                a.width = 64;
+                a.height = 48;
+            }
+            else {
+                a = this.game.add.bitmapData(48, 64);
+                a.draw(this.bmp, 0, 0, 48, 64);
+                a.width = 48;
+                a.height = 64;
+            }
             var i = new Image();
             i.src = a.texture.baseTexture.source.toDataURL();
             var bt = new PIXI.BaseTexture(i, PIXI.scaleModes.DEFAULT);
@@ -111416,10 +111425,19 @@ var ChatGame;
             this.spriteVideo.mask = this.hero.circleSprite;
             this.hero.addChild(this.spriteVideo);
             setInterval(function () {
-                var a = _this.game.add.bitmapData(64, 48);
-                a.draw(_this.bmp, 0, 0, 64, 48);
-                a.width = 64;
-                a.height = 48;
+                var a;
+                if (_this.bmp.baseTexture.width === 640) {
+                    a = _this.game.add.bitmapData(64, 48);
+                    a.draw(_this.bmp, 0, 0, 64, 48);
+                    a.width = 64;
+                    a.height = 48;
+                }
+                else {
+                    a = _this.game.add.bitmapData(48, 64);
+                    a.draw(_this.bmp, 0, 0, 48, 64);
+                    a.width = 48;
+                    a.height = 64;
+                }
                 _this.sendWebcam(a.texture.baseTexture.source.toDataURL());
                 a.destroy();
             }, 333);
