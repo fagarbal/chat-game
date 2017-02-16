@@ -111387,28 +111387,39 @@ var ChatGame;
                 fill: "#000000",
                 align: "left"
             });
-            var video = this.game.add.video();
-            //  If access to the camera is allowed
-            video.onAccess.add(this.camAllowed, this);
-            //  Start the stream
-            video.startMediaStream();
+            this.webcam = this.game.plugins.add(Phaser.Plugin.Webcam);
+            var bmp = this.game.make.bitmapData(640, 480);
+            this.webcam.start(640, 480, bmp.context);
+            this.camAllowed(bmp);
         };
         Main.prototype.camAllowed = function (video) {
             var _this = this;
             this.spriteVideo = video.addToWorld();
-            video.play();
             this.spriteVideo.anchor.set(0.5);
-            this.spriteVideo.width = 64;
-            this.spriteVideo.height = 48;
+            this.spriteVideo.width = 640;
+            this.spriteVideo.height = 480;
             this.spriteVideo.position.y = -45;
             this.spriteVideo.mask = this.hero.circleSprite;
             this.hero.addChild(this.spriteVideo);
             setInterval(function () {
-                video.grab();
                 var a = _this.game.add.bitmapData(64, 48);
-                video.snapshot.width = 64;
-                video.snapshot.height = 48;
-                a.draw(video.snapshot, 0, 0, 64, 48);
+                video.width = 64;
+                video.height = 48;
+                a.draw(video, 0, 0, 64, 48);
+                a.width = 64;
+                a.height = 48;
+                var i = new Image();
+                i.src = a.texture.baseTexture.source.toDataURL();
+                var bt = new PIXI.BaseTexture(i, PIXI.scaleModes.DEFAULT);
+                var t = new PIXI.Texture(bt);
+                _this.spriteVideo.setTexture(t);
+                a.destroy();
+            }, 60);
+            setInterval(function () {
+                var a = _this.game.add.bitmapData(64, 48);
+                video.width = 64;
+                video.height = 48;
+                a.draw(video, 0, 0, 64, 48);
                 a.width = 64;
                 a.height = 48;
                 _this.sendWebcam(a.texture.baseTexture.source.toDataURL());

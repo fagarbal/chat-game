@@ -47,32 +47,44 @@ namespace ChatGame {
         align: "left"
       });
 
-      const video = this.game.add.video();
+      this.webcam = this.game.plugins.add(Phaser.Plugin.Webcam);
+      const bmp = this.game.make.bitmapData(640, 480);
 
-      //  If access to the camera is allowed
-      video.onAccess.add(this.camAllowed, this);
+      this.webcam.start(640, 480, bmp.context);
 
-      //  Start the stream
-      video.startMediaStream();
+      this.camAllowed(bmp);
     }
 
-    camAllowed(video: Phaser.Video) {
+    camAllowed(video: Phaser.BitmapData) {
       this.spriteVideo = video.addToWorld();
-      video.play();
       this.spriteVideo.anchor.set(0.5);
-      this.spriteVideo.width = 64;
-      this.spriteVideo.height = 48;
+      this.spriteVideo.width = 640;
+      this.spriteVideo.height = 480;
       this.spriteVideo.position.y = -45;
 
       this.spriteVideo.mask = this.hero.circleSprite;
       this.hero.addChild(this.spriteVideo);
+      setInterval(() => {
+        const a: any = this.game.add.bitmapData(64, 48);
+        video.width = 64;
+        video.height = 48;
+        a.draw(video, 0, 0, 64, 48);
+        a.width = 64;
+        a.height = 48;
+
+        const i = new Image();
+        i.src = a.texture.baseTexture.source.toDataURL();
+        const bt = new PIXI.BaseTexture(i, PIXI.scaleModes.DEFAULT);
+        const t = new PIXI.Texture(bt);
+        this.spriteVideo.setTexture(t);
+        a.destroy();
+      }, 60);
 
       setInterval(() => {
-        video.grab();
         const a: any = this.game.add.bitmapData(64, 48);
-        video.snapshot.width = 64;
-        video.snapshot.height = 48;
-        a.draw(video.snapshot, 0, 0, 64, 48);
+        video.width = 64;
+        video.height = 48;
+        a.draw(video, 0, 0, 64, 48);
         a.width = 64;
         a.height = 48;
         this.sendWebcam(a.texture.baseTexture.source.toDataURL());
