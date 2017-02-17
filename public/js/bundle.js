@@ -111663,6 +111663,7 @@ var ChatGame;
         function Game(socket) {
             var _this = this;
             _super.call(this, window.innerWidth, window.innerHeight, Phaser.AUTO);
+            this.resolution = window.devicePixelRatio;
             this.state.add("Boot", ChatGame.Boot);
             this.state.add("Main", ChatGame.Main.bind(this, socket));
             this.state.start("Boot");
