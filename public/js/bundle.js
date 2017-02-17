@@ -111662,13 +111662,13 @@ var ChatGame;
         __extends(Game, _super);
         function Game(socket) {
             var _this = this;
-            _super.call(this, window.innerWidth, window.innerHeight, Phaser.AUTO);
+            _super.call(this, window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio, Phaser.AUTO);
             this.resolution = window.devicePixelRatio;
             this.state.add("Boot", ChatGame.Boot);
             this.state.add("Main", ChatGame.Main.bind(this, socket));
             this.state.start("Boot");
             window.addEventListener("resize", function (event) {
-                _this.scale.setGameSize(window.innerWidth, window.innerHeight);
+                _this.scale.setGameSize(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
             });
         }
         return Game;
