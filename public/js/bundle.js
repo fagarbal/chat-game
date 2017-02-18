@@ -111107,11 +111107,7 @@ var ChatGame;
             this.game.physics.arcade.enable(this);
             this.body.collideWorldBounds = true;
             this.body.enableBody = true;
-            this.body.onCollide = new Phaser.Signal();
-            this.body.onWorldBounds = new Phaser.Signal();
-            this.body.onCollide.add(this.onCollide, this);
-            this.body.onWorldBounds.add(this.onCollide, this);
-            this.body.setSize(this.body.width / 2, this.body.height / 2, 0, this.body.height / 2);
+            this.body.setSize(this.body.width / 2, this.body.height / 4, this.body.width / 4, this.body.height - (this.body.height / 4));
             var finalColor;
             if (!color) {
                 var colorR = Math.floor((Math.random() * 250) + 150);
@@ -111289,7 +111285,7 @@ var ChatGame;
                 this.body.velocity.y = 0;
                 this.animations.stop();
             }
-            this.setMaskPosition(this.animation);
+            // this.setMaskPosition(this.animation);
         };
         return Player;
     }(Phaser.Sprite));
@@ -111306,7 +111302,7 @@ var ChatGame;
     var Hero = (function (_super) {
         __extends(Hero, _super);
         function Hero(game, socket) {
-            _super.call(this, game, 100, 200);
+            _super.call(this, game, 400, 400);
             this.socket = socket;
             this.game.input.onDown.add(this.onMouseDown, this);
             this.heroColor = this.tint;
@@ -111344,7 +111340,6 @@ var ChatGame;
                 var radius = this.game.physics.arcade.moveToXY(this, this.game.input.activePointer.worldX, this.game.input.activePointer.worldY, this.playerSpeed);
                 this.animation = this.getAnimationByRadius(radius);
                 this.animations.play(this.animation);
-                this.setMaskPosition(this.animation);
             }
         };
         return Hero;
@@ -111375,13 +111370,12 @@ var ChatGame;
         Main.prototype.create = function () {
             var map = this.game.add.tilemap("map");
             map.addTilesetImage("tiles", "tiles");
-            map.setCollisionBetween(390, 392);
-            map.setCollisionBetween(358, 360);
-            map.setCollisionBetween(422, 424);
-            map.setCollisionBetween(295, 296);
-            map.setCollisionBetween(327, 328);
             this.layer = map.createLayer("Terrain");
+            this.collisionLayer = map.createLayer("Collision");
+            this.collisionLayer.visible = false;
+            // this.objects = map.createLayer("Objects");
             this.layer.resizeWorld();
+            map.setCollision(267, true, this.collisionLayer);
             this.hero = new ChatGame.Hero(this.game, this.socket);
             this.game.input.mouse.capture = true;
             this.players = {};
@@ -111618,7 +111612,6 @@ var ChatGame;
             this.textConnected.text = "Conected : " + count + "\n" + nicknames;
         };
         Main.prototype.update = function () {
-            this.game.physics.arcade.collide(this.hero, this.layer);
             this.updateCam();
             this.hero.update();
             for (var playerId in this.players) {
@@ -111628,10 +111621,11 @@ var ChatGame;
             // this.maskCircle.beginFill(0xffffff);
             // this.maskCircle.drawCircle(this.hero.maskPosition.x, this.hero.maskPosition.y, 100);
             for (var playerId in this.players) {
-                this.game.physics.arcade.collide(this.players[playerId], this.layer);
+                this.game.physics.arcade.collide(this.players[playerId], this.collisionLayer, this.players[playerId].onCollide.bind(this.players[playerId]));
                 this.players[playerId].update();
             }
             // this.maskCircle.endFill();
+            this.game.physics.arcade.collide(this.hero, this.collisionLayer, this.hero.onCollide.bind(this.hero));
         };
         return Main;
     }(Phaser.State));

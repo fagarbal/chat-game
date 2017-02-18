@@ -26,12 +26,7 @@ namespace ChatGame {
 
       this.body.collideWorldBounds = true;
       this.body.enableBody = true;
-
-      this.body.onCollide = new Phaser.Signal();
-      this.body.onWorldBounds = new Phaser.Signal();
-      this.body.onCollide.add(this.onCollide, this);
-      this.body.onWorldBounds.add(this.onCollide, this);
-      this.body.setSize(this.body.width / 2, this.body.height / 2, 0, this.body.height / 2);
+      this.body.setSize(this.body.width / 2, this.body.height / 4, this.body.width / 4, this.body.height - (this.body.height / 4));
 
       let finalColor: number;
 
@@ -243,7 +238,7 @@ namespace ChatGame {
         this.animations.stop();
       }
 
-      this.setMaskPosition(this.animation);
+      // this.setMaskPosition(this.animation);
     }
   }
 }

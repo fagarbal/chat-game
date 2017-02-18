@@ -5,7 +5,7 @@ namespace ChatGame {
     heroColor: number;
 
     constructor(game: Phaser.Game, socket: SocketIOClient.Socket) {
-      super(game, 100, 200);
+      super(game, 400, 400);
       this.socket = socket;
 
       this.game.input.onDown.add(this.onMouseDown, this);
@@ -55,7 +55,7 @@ namespace ChatGame {
 
         this.animation = this.getAnimationByRadius(radius);
         this.animations.play(this.animation);
-        this.setMaskPosition(this.animation);
+        // this.setMaskPosition(this.animation);
       }
     }
   }

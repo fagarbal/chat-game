@@ -13,6 +13,7 @@ namespace ChatGame {
     grab: Phaser.Image;
     bmp: Phaser.BitmapData;
     layer: Phaser.TilemapLayer;
+    collisionLayer: Phaser.TilemapLayer;
 
     constructor(private socket: SocketIOClient.Socket) {
       super();
@@ -31,14 +32,13 @@ namespace ChatGame {
       const map = this.game.add.tilemap("map");
       map.addTilesetImage("tiles", "tiles");
 
-      map.setCollisionBetween(390, 392);
-      map.setCollisionBetween(358, 360);
-      map.setCollisionBetween(422, 424);
-      map.setCollisionBetween(295, 296);
-      map.setCollisionBetween(327, 328);
 
       this.layer = map.createLayer("Terrain");
+      this.collisionLayer = map.createLayer("Collision");
+      this.collisionLayer.visible = false;
+      // this.objects = map.createLayer("Objects");
       this.layer.resizeWorld();
+      map.setCollision(267, true, this.collisionLayer);
 
       this.hero = new Hero(this.game, this.socket);
 
@@ -317,8 +317,6 @@ namespace ChatGame {
     }
 
     update() {
-      this.game.physics.arcade.collide(this.hero, this.layer);
-
       this.updateCam();
       this.hero.update();
 
@@ -331,11 +329,12 @@ namespace ChatGame {
       // this.maskCircle.drawCircle(this.hero.maskPosition.x, this.hero.maskPosition.y, 100);
 
       for (let playerId in this.players) {
-        this.game.physics.arcade.collide(this.players[playerId], this.layer);
+        this.game.physics.arcade.collide(this.players[playerId], this.collisionLayer, this.players[playerId].onCollide.bind(this.players[playerId]));
         this.players[playerId].update();
         // this.maskCircle.drawCircle(this.players[playerId].maskPosition.x, this.players[playerId].maskPosition.y, 100);
       }
       // this.maskCircle.endFill();
+      this.game.physics.arcade.collide(this.hero, this.collisionLayer, this.hero.onCollide.bind(this.hero));
     }
   }
 }
