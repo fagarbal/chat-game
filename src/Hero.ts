@@ -5,7 +5,7 @@ namespace ChatGame {
     heroColor: number;
 
     constructor(game: Phaser.Game, socket: SocketIOClient.Socket) {
-      super(game, 640, 480);
+      super(game, 100, 200);
       this.socket = socket;
 
       this.game.input.onDown.add(this.onMouseDown, this);

@@ -12,6 +12,7 @@ namespace ChatGame {
     spriteVideo: Phaser.Image;
     grab: Phaser.Image;
     bmp: Phaser.BitmapData;
+    layer: Phaser.TilemapLayer;
 
     constructor(private socket: SocketIOClient.Socket) {
       super();
@@ -30,8 +31,14 @@ namespace ChatGame {
       const map = this.game.add.tilemap("map");
       map.addTilesetImage("tiles", "tiles");
 
-      const layer = map.createLayer("Terrain");
-      layer.resizeWorld();
+      map.setCollisionBetween(390, 392);
+      map.setCollisionBetween(358, 360);
+      map.setCollisionBetween(422, 424);
+      map.setCollisionBetween(295, 296);
+      map.setCollisionBetween(327, 328);
+
+      this.layer = map.createLayer("Terrain");
+      this.layer.resizeWorld();
 
       this.hero = new Hero(this.game, this.socket);
 
@@ -310,6 +317,8 @@ namespace ChatGame {
     }
 
     update() {
+      this.game.physics.arcade.collide(this.hero, this.layer);
+
       this.updateCam();
       this.hero.update();
 
@@ -322,6 +331,7 @@ namespace ChatGame {
       // this.maskCircle.drawCircle(this.hero.maskPosition.x, this.hero.maskPosition.y, 100);
 
       for (let playerId in this.players) {
+        this.game.physics.arcade.collide(this.players[playerId], this.layer);
         this.players[playerId].update();
         // this.maskCircle.drawCircle(this.players[playerId].maskPosition.x, this.players[playerId].maskPosition.y, 100);
       }

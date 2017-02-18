@@ -31,6 +31,7 @@ namespace ChatGame {
       this.body.onWorldBounds = new Phaser.Signal();
       this.body.onCollide.add(this.onCollide, this);
       this.body.onWorldBounds.add(this.onCollide, this);
+      this.body.setSize(this.body.width / 2, this.body.height / 2, 0, this.body.height / 2);
 
       let finalColor: number;
 

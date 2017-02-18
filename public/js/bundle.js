@@ -111111,6 +111111,7 @@ var ChatGame;
             this.body.onWorldBounds = new Phaser.Signal();
             this.body.onCollide.add(this.onCollide, this);
             this.body.onWorldBounds.add(this.onCollide, this);
+            this.body.setSize(this.body.width / 2, this.body.height / 2, 0, this.body.height / 2);
             var finalColor;
             if (!color) {
                 var colorR = Math.floor((Math.random() * 250) + 150);
@@ -111305,7 +111306,7 @@ var ChatGame;
     var Hero = (function (_super) {
         __extends(Hero, _super);
         function Hero(game, socket) {
-            _super.call(this, game, 640, 480);
+            _super.call(this, game, 100, 200);
             this.socket = socket;
             this.game.input.onDown.add(this.onMouseDown, this);
             this.heroColor = this.tint;
@@ -111374,8 +111375,13 @@ var ChatGame;
         Main.prototype.create = function () {
             var map = this.game.add.tilemap("map");
             map.addTilesetImage("tiles", "tiles");
-            var layer = map.createLayer("Terrain");
-            layer.resizeWorld();
+            map.setCollisionBetween(390, 392);
+            map.setCollisionBetween(358, 360);
+            map.setCollisionBetween(422, 424);
+            map.setCollisionBetween(295, 296);
+            map.setCollisionBetween(327, 328);
+            this.layer = map.createLayer("Terrain");
+            this.layer.resizeWorld();
             this.hero = new ChatGame.Hero(this.game, this.socket);
             this.game.input.mouse.capture = true;
             this.players = {};
@@ -111612,6 +111618,7 @@ var ChatGame;
             this.textConnected.text = "Conected : " + count + "\n" + nicknames;
         };
         Main.prototype.update = function () {
+            this.game.physics.arcade.collide(this.hero, this.layer);
             this.updateCam();
             this.hero.update();
             for (var playerId in this.players) {
@@ -111621,6 +111628,7 @@ var ChatGame;
             // this.maskCircle.beginFill(0xffffff);
             // this.maskCircle.drawCircle(this.hero.maskPosition.x, this.hero.maskPosition.y, 100);
             for (var playerId in this.players) {
+                this.game.physics.arcade.collide(this.players[playerId], this.layer);
                 this.players[playerId].update();
             }
             // this.maskCircle.endFill();
@@ -111665,13 +111673,13 @@ var ChatGame;
         __extends(Game, _super);
         function Game(socket) {
             var _this = this;
-            _super.call(this, window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio, Phaser.AUTO);
+            _super.call(this, window.innerWidth, window.innerHeight, Phaser.AUTO);
             this.resolution = window.devicePixelRatio;
             this.state.add("Boot", ChatGame.Boot);
             this.state.add("Main", ChatGame.Main.bind(this, socket));
             this.state.start("Boot");
             window.addEventListener("resize", function (event) {
-                _this.scale.setGameSize(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
+                _this.scale.setGameSize(window.innerWidth, window.innerHeight);
             });
         }
         return Game;
