@@ -111149,17 +111149,17 @@ var ChatGame;
             this.chatPositionY = 0;
             this.addChild(this.textNickname);
             this.addChild(this.playerRectangle);
-            this.circleSprite = this.game.add.graphics(0, 0);
-            this.circleSprite.beginFill(0xFFFFFF);
-            this.circleSprite.drawCircle(0, -45, 48);
-            this.addChild(this.circleSprite);
-            if (color) {
-                this.spriteWebcam = this.game.add.sprite(0, 0);
-                this.spriteWebcam.anchor.set(0.5);
-                this.spriteWebcam.position.y = -45;
-                this.spriteWebcam.mask = this.circleSprite;
-                this.addChild(this.spriteWebcam);
-            }
+            // this.circleSprite = this.game.add.graphics(0, 0);
+            // this.circleSprite.beginFill(0xFFFFFF);
+            // this.circleSprite.drawCircle(0, -45, 48);
+            // this.addChild(this.circleSprite);
+            // if (color) {
+            //   this.spriteWebcam = this.game.add.sprite(0, 0);
+            //   this.spriteWebcam.anchor.set(0.5);
+            //   this.spriteWebcam.position.y = -45;
+            //   this.spriteWebcam.mask = this.circleSprite;
+            //   this.addChild(this.spriteWebcam);
+            // }
         }
         Player.prototype.loadBike = function () {
             this.loadTexture("bike", 0);
@@ -111390,12 +111390,12 @@ var ChatGame;
                 align: "left"
             });
             this.textConnected.fixedToCamera = true;
-            this.webcam = this.game.plugins.add(Phaser.Plugin.Webcam);
-            this.bmp = this.game.make.bitmapData(640, 480);
-            this.bmp.width = 64;
-            this.bmp.height = 48;
-            this.webcam.start(640, 480, this.bmp.context);
-            this.camAllowed();
+            // this.webcam = this.game.plugins.add(Phaser.Plugin.Webcam);
+            // this.bmp = this.game.make.bitmapData(640, 480);
+            // this.bmp.width = 64;
+            // this.bmp.height = 48;
+            // this.webcam.start(640, 480, this.bmp.context);
+            // this.camAllowed();
         };
         Main.prototype.updateCam = function () {
             var a;
@@ -111612,7 +111612,8 @@ var ChatGame;
             this.textConnected.text = "Conected : " + count + "\n" + nicknames;
         };
         Main.prototype.update = function () {
-            this.updateCam();
+            // this.game.debug.body(this.hero);
+            // this.updateCam();
             this.hero.update();
             for (var playerId in this.players) {
                 this.players[playerId].update();

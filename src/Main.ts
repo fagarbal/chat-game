@@ -60,14 +60,14 @@ namespace ChatGame {
 
       this.textConnected.fixedToCamera = true;
 
-      this.webcam = this.game.plugins.add(Phaser.Plugin.Webcam);
-      this.bmp = this.game.make.bitmapData(640, 480);
-      this.bmp.width = 64;
-      this.bmp.height = 48;
+      // this.webcam = this.game.plugins.add(Phaser.Plugin.Webcam);
+      // this.bmp = this.game.make.bitmapData(640, 480);
+      // this.bmp.width = 64;
+      // this.bmp.height = 48;
 
-      this.webcam.start(640, 480, this.bmp.context);
+      // this.webcam.start(640, 480, this.bmp.context);
 
-      this.camAllowed();
+      // this.camAllowed();
     }
 
     updateCam() {
@@ -317,7 +317,9 @@ namespace ChatGame {
     }
 
     update() {
-      this.updateCam();
+      // this.game.debug.body(this.hero);
+
+      // this.updateCam();
       this.hero.update();
 
       for (let playerId in this.players) {

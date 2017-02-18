@@ -86,20 +86,20 @@ namespace ChatGame {
 
       this.addChild(this.playerRectangle);
 
-      this.circleSprite = this.game.add.graphics(0, 0);
-      this.circleSprite.beginFill(0xFFFFFF);
-      this.circleSprite.drawCircle(0, -45, 48);
+      // this.circleSprite = this.game.add.graphics(0, 0);
+      // this.circleSprite.beginFill(0xFFFFFF);
+      // this.circleSprite.drawCircle(0, -45, 48);
 
-      this.addChild(this.circleSprite);
+      // this.addChild(this.circleSprite);
 
-      if (color) {
-        this.spriteWebcam = this.game.add.sprite(0, 0);
-        this.spriteWebcam.anchor.set(0.5);
-        this.spriteWebcam.position.y = -45;
+      // if (color) {
+      //   this.spriteWebcam = this.game.add.sprite(0, 0);
+      //   this.spriteWebcam.anchor.set(0.5);
+      //   this.spriteWebcam.position.y = -45;
 
-        this.spriteWebcam.mask = this.circleSprite;
-        this.addChild(this.spriteWebcam);
-      }
+      //   this.spriteWebcam.mask = this.circleSprite;
+      //   this.addChild(this.spriteWebcam);
+      // }
     }
 
     loadBike() {
