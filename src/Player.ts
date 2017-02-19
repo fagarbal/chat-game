@@ -118,6 +118,22 @@ namespace ChatGame {
       this.playerSpeed = 200;
     }
 
+    loadGirl() {
+      this.loadTexture("girl", 0);
+      this.animations.add("left", [3, 4, 5], 9, true, true);
+      this.animations.add("left-top", [3, 4, 5], 9, true, true);
+      this.animations.add("top", [9, 10, 11], 9, true, true);
+      this.animations.add("right-top", [6, 7, 8], 9, true, true);
+      this.animations.add("right", [6, 7, 8], 9, true, true);
+      this.animations.add("right-bottom", [6, 7, 8], 9, true, true);
+      this.animations.add("bottom", [0, 1, 2], 9, true, true);
+      this.animations.add("left-bottom", [3, 4, 5], 9, true, true);
+
+      this.selectedSprite = "girl";
+
+      this.playerSpeed = 200;
+    }
+
     loadPlayer() {
       this.loadTexture("sprite");
       this.animations.add("left-bottom", [0, 1, 2, 3, 4, 5, 6, 7, 8], 9, true, true);

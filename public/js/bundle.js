@@ -111174,6 +111174,19 @@ var ChatGame;
             this.selectedSprite = "bike";
             this.playerSpeed = 200;
         };
+        Player.prototype.loadGirl = function () {
+            this.loadTexture("girl", 0);
+            this.animations.add("left", [3, 4, 5], 9, true, true);
+            this.animations.add("left-top", [3, 4, 5], 9, true, true);
+            this.animations.add("top", [9, 10, 11], 9, true, true);
+            this.animations.add("right-top", [6, 7, 8], 9, true, true);
+            this.animations.add("right", [6, 7, 8], 9, true, true);
+            this.animations.add("right-bottom", [6, 7, 8], 9, true, true);
+            this.animations.add("bottom", [0, 1, 2], 9, true, true);
+            this.animations.add("left-bottom", [3, 4, 5], 9, true, true);
+            this.selectedSprite = "girl";
+            this.playerSpeed = 200;
+        };
         Player.prototype.loadPlayer = function () {
             this.loadTexture("sprite");
             this.animations.add("left-bottom", [0, 1, 2, 3, 4, 5, 6, 7, 8], 9, true, true);
@@ -111364,6 +111377,7 @@ var ChatGame;
         Main.prototype.preload = function () {
             this.game.load.spritesheet("sprite", "img/player.png", 64, 96, 72);
             this.game.load.spritesheet("bike", "img/bicycle.png", 64, 64, 64);
+            this.game.load.spritesheet("girl", "img/girl.png", 64, 96, 12);
             this.game.load.tilemap("map", "maps/map.json", null, Phaser.Tilemap.TILED_JSON);
             this.game.load.image("tiles", "img/terrain_atlas.png");
         };
@@ -111478,6 +111492,11 @@ var ChatGame;
                         inputMessage.value = "";
                         return;
                     }
+                    if (inputMessage.value === ":girl") {
+                        _this.change("girl", _this.hero, true);
+                        inputMessage.value = "";
+                        return;
+                    }
                     _this.sendMessage(inputMessage.value);
                 }
                 if (inputNick.value !== _this.hero.textNickname.text) {
@@ -111501,6 +111520,11 @@ var ChatGame;
                             inputMessage.value = "";
                             return;
                         }
+                        if (inputMessage.value === ":girl") {
+                            _this.change("girl", _this.hero, true);
+                            inputMessage.value = "";
+                            return;
+                        }
                         _this.sendMessage(inputMessage.value);
                     }
                     if (inputNick.value !== _this.hero.textNickname.text) {
@@ -111519,6 +111543,8 @@ var ChatGame;
                 player.loadBike();
             if (sprite === "player")
                 player.loadPlayer();
+            if (sprite === "girl")
+                player.loadGirl();
             if (send) {
                 this.socket.emit("sendSprite", {
                     id: this.socket.id,
@@ -111579,7 +111605,7 @@ var ChatGame;
                 _this.updateNicknames();
             });
             this.socket.on("messagePlayer", function (message) {
-                if (message.message === ":bike" || message.message === ":player")
+                if (message.message === ":bike" || message.message === ":player" || message.message === ":girl")
                     return;
                 _this.players[message.id].newMessage(message.message);
             });
