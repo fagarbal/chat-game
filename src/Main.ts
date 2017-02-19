@@ -13,6 +13,7 @@ namespace ChatGame {
     grab: Phaser.Image;
     bmp: Phaser.BitmapData;
     layer: Phaser.TilemapLayer;
+    upLayer: Phaser.TilemapLayer;
     collisionLayer: Phaser.TilemapLayer;
 
     constructor(private socket: SocketIOClient.Socket) {
@@ -34,6 +35,7 @@ namespace ChatGame {
 
 
       this.layer = map.createLayer("Terrain");
+      this.upLayer = map.createLayer("TerrainUp");
       this.collisionLayer = map.createLayer("Collision");
       this.collisionLayer.visible = false;
       // this.objects = map.createLayer("Objects");

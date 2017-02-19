@@ -111371,6 +111371,7 @@ var ChatGame;
             var map = this.game.add.tilemap("map");
             map.addTilesetImage("tiles", "tiles");
             this.layer = map.createLayer("Terrain");
+            this.upLayer = map.createLayer("TerrainUp");
             this.collisionLayer = map.createLayer("Collision");
             this.collisionLayer.visible = false;
             // this.objects = map.createLayer("Objects");
