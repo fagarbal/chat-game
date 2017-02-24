@@ -111673,9 +111673,8 @@ var ChatGame;
             _super.apply(this, arguments);
         }
         Boot.prototype.create = function () {
-            this.stage.disableVisibilityChange = true;
-            this.game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
-            this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+            this.stage.disableVisibilityChange = false;
+            this.game.scale.scaleMode = Phaser.ScaleManager.RESIZE;
             this.game.scale.refresh();
             this.game.state.start("Main");
         };
@@ -111694,15 +111693,11 @@ var ChatGame;
     var Game = (function (_super) {
         __extends(Game, _super);
         function Game(socket) {
-            var _this = this;
-            _super.call(this, 768, 1024, Phaser.AUTO);
+            _super.call(this, "100%", "100%", Phaser.AUTO);
             this.resolution = window.devicePixelRatio;
             this.state.add("Boot", ChatGame.Boot);
             this.state.add("Main", ChatGame.Main.bind(this, socket));
             this.state.start("Boot");
-            window.addEventListener("resize", function (event) {
-                _this.scale.setGameSize(768, 1024);
-            });
         }
         return Game;
     }(Phaser.Game));
