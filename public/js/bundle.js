@@ -111674,7 +111674,7 @@ var ChatGame;
         }
         Boot.prototype.create = function () {
             this.stage.disableVisibilityChange = false;
-            this.game.scale.scaleMode = Phaser.ScaleManager.RESIZE;
+            this.game.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;
             this.game.scale.refresh();
             this.game.state.start("Main");
         };
