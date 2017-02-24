@@ -41,6 +41,9 @@ namespace ChatGame {
       this.collisionLayer.visible = false;
       // this.objects = map.createLayer("Objects");
       this.layer.resizeWorld();
+      this.upLayer.resizeWorld();
+      this.collisionLayer.resizeWorld();
+
       map.setCollision(267, true, this.collisionLayer);
 
       this.hero = new Hero(this.game, this.socket);
