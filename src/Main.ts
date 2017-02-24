@@ -34,7 +34,6 @@ namespace ChatGame {
       const map = this.game.add.tilemap("map");
       map.addTilesetImage("tiles", "tiles");
 
-
       this.layer = map.createLayer("Terrain");
       this.upLayer = map.createLayer("TerrainUp");
       this.collisionLayer = map.createLayer("Collision");
@@ -45,6 +44,7 @@ namespace ChatGame {
       this.collisionLayer.resizeWorld();
 
       map.setCollision(267, true, this.collisionLayer);
+      map.setPreventRecalculate(true);
 
       this.hero = new Hero(this.game, this.socket);
 

@@ -111393,6 +111393,7 @@ var ChatGame;
             this.upLayer.resizeWorld();
             this.collisionLayer.resizeWorld();
             map.setCollision(267, true, this.collisionLayer);
+            map.setPreventRecalculate(true);
             this.hero = new ChatGame.Hero(this.game, this.socket);
             this.game.input.mouse.capture = true;
             this.players = {};
